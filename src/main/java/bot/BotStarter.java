@@ -65,7 +65,7 @@ public class BotStarter {
         ArrayList<Shape> placements = new ArrayList<>();
 
         for (int x = 0; x < field.getWidth(); x++) {
-            for (int y = field.getHeight() - 1; y < 0; y--) {
+            for (int y = field.getHeight() - 1; y >= 0; y--) {
                 Shape shape = new Shape(state.getCurrentShape(), new Point(x, y));
                 if(isValidPosition(shape, field)) {
                     placements.add(shape);
