@@ -52,7 +52,7 @@ class PlacementComparator implements Comparator<Shape> {
     }
 
     private int compareOpeness(Cell[][] grid1, Cell[][] grid2) {
-        return calculateOpeness(grid1) - calculateOpeness(grid2);
+        return calculateOpeness(grid2) - calculateOpeness(grid1);
     }
 
     private int calculateOpeness(Cell[][] grid) {
