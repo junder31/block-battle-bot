@@ -76,7 +76,7 @@ public class Field {
 		if(!isShapeSupported(shape)) {
 			log.trace("Invalid position %s. Shape is not supported.", shape.getLocation());
 			isValid = false;
-		} else if(areShapeCellsEmpty(shape)) {
+		} else if(!areShapeCellsEmpty(shape)) {
 			log.trace("Invalid position %s. Shape cells are not empty.", shape.getLocation());
 			isValid = false;
 		} else {
@@ -90,8 +90,7 @@ public class Field {
 		Cell[] cells = shape.getBlocks();
 
 		for (Cell cell : cells) {
-			Point p = cell.getLocation();
-			p.setLocation(p.x, p.y + 1);
+			Point p = new Point(cell.getLocation().x, cell.getLocation().y + 1);
 			if ( !isLocationEmpty(p) ) {
 				return true;
 			}

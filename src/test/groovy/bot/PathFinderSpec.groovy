@@ -1,6 +1,7 @@
 package bot
 
 import field.Field
+import field.FieldUtil
 import field.Point
 import field.Shape
 import field.ShapeType
@@ -13,7 +14,7 @@ class PathFinderSpec extends Specification {
 
     void "test finding a path straight down on small empty field"() {
         given:
-        Field field = getEmptyField(4, 4)
+        Field field = FieldUtil.getEmptyField(4, 4)
         Shape start = new Shape(ShapeType.Z, new Point(1,-1))
         Shape end = new Shape(ShapeType.Z, new Point(1, 2))
 
@@ -28,7 +29,7 @@ class PathFinderSpec extends Specification {
 
     void "test finding a path straight down on full size empty field"() {
         given:
-        Field field = getEmptyField(10, 20)
+        Field field = FieldUtil.getEmptyField(10, 20)
         Shape start = new Shape(ShapeType.Z, new Point(1,-1))
         Shape end = new Shape(ShapeType.Z, new Point(1, 18))
 
@@ -43,7 +44,7 @@ class PathFinderSpec extends Specification {
 
     void "test finding a path offset on a small field"() {
         given:
-        Field field = getEmptyField(4, 4)
+        Field field = FieldUtil.getEmptyField(4, 4)
         Shape start = new Shape(ShapeType.Z, new Point(1,-1))
         Shape end = new Shape(ShapeType.Z, new Point(0, 2))
 
@@ -57,9 +58,5 @@ class PathFinderSpec extends Specification {
         1 == moves.findAll { it == MoveType.LEFT }.size()
     }
 
-    private Field getEmptyField(int width, int height) {
-        String row = (1..width).collect { "0" }.join(",")
-        String grid = (1..height).collect { row }.join(";")
-        return new Field(width, height, grid)
-    }
+
 }
