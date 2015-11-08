@@ -67,7 +67,7 @@ public class Shape {
 		}
 		
 		this.setBlockLocations();
-        this.orientation = ShapeOrientation.values()[this.orientation.ordinal() - 1 % ShapeOrientation.values().length];
+        this.orientation = orientation.rotateLeft();
         return this;
 	}
 	
@@ -82,7 +82,7 @@ public class Shape {
 		}
 		
 		this.setBlockLocations();
-        this.orientation = ShapeOrientation.values()[this.orientation.ordinal() + 1 % ShapeOrientation.values().length];
+        this.orientation = orientation.rotateRight();
         return this;
 	}
 
