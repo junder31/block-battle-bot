@@ -1,6 +1,7 @@
 package log;
 
 import bot.BotStarter;
+import bot.PathFinder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +16,7 @@ public class LogConfig {
 
     private LogConfig() {
         loggerLevels.put(BotStarter.class.getSimpleName(), LogLevel.DEBUG);
-        loggerLevels.put(BotStarter.class.getSimpleName(), LogLevel.TRACE);
+        loggerLevels.put(PathFinder.class.getSimpleName(), LogLevel.TRACE);
     }
 
     public static synchronized LogConfig getInstance() {
