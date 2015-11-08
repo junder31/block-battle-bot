@@ -21,11 +21,11 @@ class PlacementComparator implements Comparator<Shape> {
         Cell[][] grid1 = getGrid(s1);
         Cell[][] grid2 = getGrid(s2);
 
-        int c = compareHeight(grid1, grid2);
+        int c = compareOpeness(grid1, grid2);
         if (c == 0) {
             c = compareLinesCompleted(grid1, grid2);
             if (c == 0) {
-                c = compareOpeness(grid1, grid2);
+                c = compareHeight(grid1, grid2);
             }
         }
 
@@ -52,7 +52,7 @@ class PlacementComparator implements Comparator<Shape> {
     }
 
     private int compareOpeness(Cell[][] grid1, Cell[][] grid2) {
-        return calculateOpeness(grid2) - calculateOpeness(grid1);
+        return calculateOpeness(grid1) - calculateOpeness(grid2);
     }
 
     private int calculateOpeness(Cell[][] grid) {
@@ -62,24 +62,21 @@ class PlacementComparator implements Comparator<Shape> {
             for (int x = 0; x < field.getWidth(); x++) {
                 Cell cell = grid[x][y];
                 if (!cell.isEmpty()) {
-                    if (cell.getLocation().x + 1 < field.getWidth() &&
-                            grid[cell.getLocation().x + 1][cell.getLocation().y].isEmpty()) {
-                        score++;
-                    }
 
-                    if (cell.getLocation().x - 1 >= 0 &&
-                            grid[cell.getLocation().x - 1][cell.getLocation().y].isEmpty()) {
-                        score++;
-                    }
 
                     if (cell.getLocation().y - 1 >= 0 &&
-                            grid[cell.getLocation().x][cell.getLocation().y - 1].isEmpty()) {
-                        score++;
-                    }
+                            !grid[cell.getLocation().x][cell.getLocation().y - 1].isEmpty()) {
+                        score-=3;
 
-                    if (cell.getLocation().y + 1 < field.getHeight() &&
-                            grid[cell.getLocation().x][cell.getLocation().y + 1].isEmpty()) {
-                        score++;
+                        if (cell.getLocation().x + 1 < field.getWidth() &&
+                                !grid[cell.getLocation().x + 1][cell.getLocation().y].isEmpty()) {
+                            score--;
+                        }
+
+                        if (cell.getLocation().x - 1 >= 0 &&
+                                !grid[cell.getLocation().x - 1][cell.getLocation().y].isEmpty()) {
+                            score--;
+                        }
                     }
                 }
             }
