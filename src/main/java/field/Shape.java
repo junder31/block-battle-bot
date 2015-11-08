@@ -58,7 +58,6 @@ public class Shape {
 	 * Rotates the shape counter-clockwise
 	 */
 	public Shape turnLeft() {
-
 		Cell[][] temp = this.transposeShape();
 		for(int y=0; y < size; y++) {
 			for(int x=0; x < size; x++) {
@@ -75,7 +74,6 @@ public class Shape {
 	 * Rotates the shape clockwise
 	 */
 	public Shape turnRight() {
-
 		Cell[][] temp = this.transposeShape();
 		for(int x=0; x < size; x++) {
 			this.shape[x] = temp[size - x - 1];
@@ -87,29 +85,25 @@ public class Shape {
 	}
 
     public Shape oneUp() {
-
-        this.location.y--;
+        this.location = new Point(location.x, location.y- 1);
         this.setBlockLocations();
         return this;
     }
 
 	public Shape oneDown() {
-		
-		this.location.y++;
+        this.location = new Point(location.x, location.y+ 1);
 		this.setBlockLocations();
         return this;
 	}
 	
 	public Shape oneRight() {
-		
-		this.location.x++;
+        this.location = new Point(location.x + 1, location.y);
 		this.setBlockLocations();
         return this;
 	}
 	
 	public Shape oneLeft() {
-		
-		this.location.x--;
+        this.location = new Point(location.x - 1, location.y);
 		this.setBlockLocations();
         return this;
 	}

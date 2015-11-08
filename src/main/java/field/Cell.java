@@ -78,11 +78,7 @@ public class Cell {
     }
 
     public void setLocation(int x, int y) {
-		if(this.location == null) {
-            this.location = new Point();
-        }
-
-		this.location.setLocation(x, y);
+		this.location = new Point(x, y);
 	}
 
     public boolean isShape() {

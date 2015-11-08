@@ -1,5 +1,6 @@
 package bot
 
+import field.CellType
 import field.Field
 import field.FieldUtil
 import field.Point
@@ -35,6 +36,23 @@ class PlacementComparatorSpec extends Specification {
                                  new Shape(ShapeType.Z, new Point(0,1)).turnRight().turnRight(),
                                  new Shape(ShapeType.Z, new Point(0,2)),
                                  new Shape(ShapeType.Z, new Point(0,1)).turnRight().turnRight().turnRight()]
+
+        when:
+        Collections.sort(positions, new PlacementComparator(field))
+
+        then:
+        ShapeOrientation.RIGHT == positions.first().orientation
+    }
+
+    void "test limiting overhang. I shape bottom left filled"() {
+        given:
+        Field field = FieldUtil.getEmptyField(4, 4)
+        field.getCell(0, 3).state = CellType.BLOCK
+        field.getCell(1, 3).state = CellType.BLOCK
+        field.getCell(0, 2).state = CellType.BLOCK
+        List<Shape> positions = [new Shape(ShapeType.I, new Point(0,0)).turnRight(),
+                                 new Shape(ShapeType.I, new Point(0,-1)).turnRight().turnRight(),
+                                 new Shape(ShapeType.I, new Point(0,0))]
 
         when:
         Collections.sort(positions, new PlacementComparator(field))
