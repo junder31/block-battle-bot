@@ -71,7 +71,7 @@ public class PathFinder {
         public PathEvaluator(List<MoveType> moves) {
             Shape shape = new Shape(end);
 
-            for (int i = moves.size() - 1; i >= 0; i++) {
+            for (int i = moves.size() - 1; i >= 0; i--) {
                 MoveType move = moves.get(i);
                 applyMove(shape, move);
             }
