@@ -52,7 +52,7 @@ public class BotStarter {
 
 
         List<Shape> possiblePlacements = getPossiblePlacements(state);
-        log.debug("Possible placements: %d", possiblePlacements);
+        log.trace("Possible placements: %s", possiblePlacements);
 
         if(possiblePlacements.size() == 0) {
             throw new RuntimeException("Failed to find any possible placements for " + getCurrentShape(state) + ".");
@@ -63,6 +63,7 @@ public class BotStarter {
         for(int i = 0; i < possiblePlacements.size(); i++) {
             Shape placement = possiblePlacements.get(i);
             try {
+                log.debug("Attempting to find path from %s to %s.", getCurrentShape(state), placement);
                 moves = new PathFinder(getCurrentShape(state), placement, state.getMyField()).findPath();
                 break;
             } catch (NoPathAvailableException ex) {
