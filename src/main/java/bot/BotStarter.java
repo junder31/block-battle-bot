@@ -57,6 +57,8 @@ public class BotStarter {
             throw new RuntimeException("Failed to find any possible placements for " + getCurrentShape(state) + ".");
         }
 
+        Collections.sort(possiblePlacements, new PlacementComparator(state.getMyField()));
+
         List<MoveType> moves = null;
 
         for(int i = 0; i < possiblePlacements.size(); i++) {
