@@ -2,6 +2,7 @@ package bot;
 
 import field.Field;
 import field.Shape;
+import log.Logger;
 import moves.MoveType;
 
 import java.util.HashSet;
@@ -13,6 +14,8 @@ import java.util.Set;
  * Created by johnunderwood on 11/8/15.
  */
 public class PathFinder {
+    private static Logger log = new Logger(PathFinder.class.getSimpleName());
+    private Set<Shape> visitedLocations = new HashSet<>();
     private final Shape start;
     private final Shape end;
     private final Field field;
@@ -21,6 +24,7 @@ public class PathFinder {
         this.start = start;
         this.end = end;
         this.field = field;
+        visitedLocations.add(end);
     }
 
     public List<MoveType> findPath() {
@@ -29,14 +33,18 @@ public class PathFinder {
         startPath.push(MoveType.DROP);
         pathSet.add(startPath);
 
-        Set<List<MoveType>> nextPathSets = new HashSet<>();
-        for(List<MoveType> path : getNextPaths(pathSet)) {
-            PathEvaluator pathEvaluator = new PathEvaluator(path);
-            if(pathEvaluator.isComplete) {
-                return path;
-            } else if(pathEvaluator.isValid) {
-                nextPathSets.add(path);
+        while(!pathSet.isEmpty()) {
+            log.trace("Evaluating paths: %s", pathSet);
+            Set<List<MoveType>> nextPathSets = new HashSet<>();
+            for (List<MoveType> path : getNextPaths(pathSet)) {
+                PathEvaluator pathEvaluator = new PathEvaluator(path);
+                if (pathEvaluator.isComplete) {
+                    return path;
+                } else if (pathEvaluator.isValid) {
+                    nextPathSets.add(path);
+                }
             }
+            pathSet = nextPathSets;
         }
 
         throw new NoPathAvailableException();
@@ -45,8 +53,8 @@ public class PathFinder {
     private Set<List<MoveType>> getNextPaths(Set<List<MoveType>> lastPaths) {
         Set<List<MoveType>> nextPaths = new HashSet<>();
 
-        for(List<MoveType> lastPath : lastPaths) {
-            for(MoveType moveType : MoveType.getPathMoveTypes()) {
+        for (List<MoveType> lastPath : lastPaths) {
+            for (MoveType moveType : MoveType.getPathMoveTypes()) {
                 LinkedList<MoveType> nextPath = new LinkedList<>(lastPath);
                 nextPath.push(moveType);
                 nextPaths.add(nextPath);
@@ -68,7 +76,10 @@ public class PathFinder {
                 applyMove(shape, move);
             }
 
-            if (field.isValidPosition(shape)) {
+            if (visitedLocations.contains(shape)) {
+                isValid = false;
+                isComplete = false;
+            } else if (field.isValidPosition(shape)) {
                 isValid = true;
                 isComplete = shape.equals(start);
             } else {
