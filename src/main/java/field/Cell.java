@@ -61,34 +61,34 @@ public class Cell {
 	public void setShape() {
 		this.state = CellType.SHAPE;
 	}
-	
-	public void setLocation(int x, int y) {
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Cell cell = (Cell) o;
+
+        if (location != null ? !location.equals(cell.location) : cell.location != null) return false;
+        return state == cell.state;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = location != null ? location.hashCode() : 0;
+        result = 31 * result + state.hashCode();
+        return result;
+    }
+
+    public void setLocation(int x, int y) {
 		if(this.location == null)
 			this.location = new Point();
 		
 		this.location.setLocation(x, y);
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-
-		Cell cell = (Cell) o;
-
-		if (!location.equals(cell.location)) return false;
-		return state == cell.state;
-
-	}
-
-	@Override
-	public int hashCode() {
-		int result = location.hashCode();
-		result = 31 * result + state.hashCode();
-		return result;
-	}
-
-	public boolean isShape() {
+    public boolean isShape() {
 		return this.state == CellType.SHAPE;
 	}
 	
