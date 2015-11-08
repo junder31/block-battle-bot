@@ -21,11 +21,11 @@ class PlacementComparator implements Comparator<Shape> {
         Cell[][] grid1 = getGrid(s1);
         Cell[][] grid2 = getGrid(s2);
 
-        int c = compareOpeness(grid1, grid2);
+        int c = compareHeight(grid1, grid2);
         if (c == 0) {
             c = compareLinesCompleted(grid1, grid2);
             if (c == 0) {
-                c = compareHeight(grid1, grid2);
+                c = compareOpeness(grid1, grid2);
             }
         }
 
