@@ -26,8 +26,7 @@ package moves;
  */
 
 public enum MoveType {
-	DOWN, LEFT, RIGHT, TURNLEFT, TURNRIGHT;
-	// , DROP, SKIP;
+	DOWN, LEFT, RIGHT, TURNLEFT, TURNRIGHT , DROP, SKIP;
 	
 	@Override
 	public String toString() {

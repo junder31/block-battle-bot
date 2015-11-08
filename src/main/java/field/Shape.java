@@ -40,11 +40,9 @@ public class Shape {
 	private Cell[] blocks; // array that contains only the block-cells of the shape
 	private int size;
 	private Point location;
-	private Field field;
 	
-	public Shape(ShapeType type, Field field, Point location) {
+	public Shape(ShapeType type, Point location) {
 		this.type = type;
-		this.field = field;
 		this.blocks = new Cell[4];
 		this.location = location;
 		
