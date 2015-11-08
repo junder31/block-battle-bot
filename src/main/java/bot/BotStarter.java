@@ -52,7 +52,11 @@ public class BotStarter {
 
 
         List<Shape> possiblePlacements = getPossiblePlacements(state);
-        log.debug("Possible placements %s", possiblePlacements);
+        log.debug("Possible placements: %d", possiblePlacements.size());
+
+        for(Shape placement : possiblePlacements) {
+            log.debug("%s", placement);
+        }
 
         if(possiblePlacements.size() == 0) {
             throw new RuntimeException("Failed to find any possible placements for " + getCurrentShape(state) + ".");
