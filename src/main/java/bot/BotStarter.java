@@ -64,11 +64,19 @@ public class BotStarter {
         Field field = state.getMyField();
         ArrayList<Shape> placements = new ArrayList<>();
 
+
         for (int x = 0; x < field.getWidth(); x++) {
             for (int y = field.getHeight() - 1; y >= 0; y--) {
-                Shape shape = new Shape(state.getCurrentShape(), new Point(x, y));
-                if(isValidPosition(shape, field)) {
-                    placements.add(shape);
+                for (int i = 0; i < 4; i++) {
+                    Shape shape = new Shape(state.getCurrentShape(), new Point(x, y));
+
+                    for(int j = i; j > 0; j--) {
+                        shape.turnRight();
+                    }
+
+                    if(isValidPosition(shape, field)) {
+                        placements.add(shape);
+                    }
                 }
             }
         }
