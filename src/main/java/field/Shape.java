@@ -17,12 +17,7 @@
 
 package field;
 
-import java.awt.Point;
 import java.util.Arrays;
-
-import field.Cell;
-import field.Field;
-import field.ShapeType;
 
 /**
  * Shape class

@@ -17,12 +17,11 @@
 
 package bot;
 import field.Field;
+import field.Point;
 import field.Shape;
 import field.ShapeType;
 import log.Logger;
 import moves.MoveType;
-
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -65,6 +64,7 @@ public class BotStarter {
             try {
                 log.debug("Attempting to find path from %s to %s.", getCurrentShape(state), placement);
                 moves = new PathFinder(getCurrentShape(state), placement, state.getMyField()).findPath();
+                log.info("Moving shape to %s with moves %s.", placement, moves);
                 break;
             } catch (NoPathAvailableException ex) {
                 log.warn("Could not find a path from %s to %s.", getCurrentShape(state), placement);

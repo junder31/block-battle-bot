@@ -1,10 +1,6 @@
-package bot
+package field
 
-import field.CellType
-import field.Field
 import spock.lang.Specification
-
-import java.awt.Point
 
 /**
  * Created by johnunderwood on 11/8/15.

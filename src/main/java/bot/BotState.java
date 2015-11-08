@@ -17,10 +17,10 @@
 
 package bot;
 
-import java.awt.Point;
 import java.util.HashMap;
 import java.util.Map;
 
+import field.Point;
 import player.Player;
 
 import field.Field;

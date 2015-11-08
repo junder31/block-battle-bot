@@ -1,13 +1,11 @@
 package bot
 
 import field.Field
+import field.Point
 import field.Shape
 import field.ShapeType
 import moves.MoveType
 import spock.lang.Specification
-
-import java.awt.Point
-
 /**
  * Created by johnunderwood on 11/8/15.
  */

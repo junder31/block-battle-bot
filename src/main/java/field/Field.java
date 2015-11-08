@@ -17,10 +17,7 @@
 
 package field;
 
-import field.Cell;
 import log.Logger;
-
-import java.awt.*;
 
 /**
  * Field class

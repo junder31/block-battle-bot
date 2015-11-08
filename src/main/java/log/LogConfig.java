@@ -16,7 +16,7 @@ public class LogConfig {
 
     private LogConfig() {
         loggerLevels.put(BotStarter.class.getSimpleName(), LogLevel.DEBUG);
-        loggerLevels.put(PathFinder.class.getSimpleName(), LogLevel.TRACE);
+        loggerLevels.put(PathFinder.class.getSimpleName(), LogLevel.DEBUG);
     }
 
     public static synchronized LogConfig getInstance() {

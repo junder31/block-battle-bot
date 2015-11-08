@@ -17,10 +17,6 @@
 
 package field;
 
-import java.awt.Point;
-
-import field.CellType;
-
 /**
  * Cell class
  * 
@@ -82,9 +78,10 @@ public class Cell {
     }
 
     public void setLocation(int x, int y) {
-		if(this.location == null)
-			this.location = new Point();
-		
+		if(this.location == null) {
+            this.location = new Point();
+        }
+
 		this.location.setLocation(x, y);
 	}
 
