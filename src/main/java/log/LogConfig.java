@@ -14,7 +14,7 @@ public class LogConfig {
     private Map<String, LogLevel> loggerLevels = new HashMap<>();
 
     private LogConfig() {
-        loggerLevels.put(BotStarter.class.getSimpleName(), LogLevel.TRACE);
+        loggerLevels.put(BotStarter.class.getSimpleName(), LogLevel.DEBUG);
     }
 
     public static synchronized LogConfig getInstance() {

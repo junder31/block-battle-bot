@@ -227,4 +227,9 @@ public class Shape {
 	public ShapeType getType() {
 		return this.type;
 	}
+
+	@Override
+	public String toString() {
+		return "Shape [x: " + location.x + ", y: " + location.y + ", type: " + type + "]";
+	}
 }
