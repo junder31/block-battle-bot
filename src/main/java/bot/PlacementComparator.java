@@ -62,16 +62,16 @@ class PlacementComparator implements Comparator<Shape> {
             for (int x = 0; x < field.getWidth(); x++) {
                 Cell cell = grid[x][y];
                 if (cell.isEmpty()) {
-                    if (cell.getLocation().y - 1 >= 0 &&
+                    if (cell.getLocation().y - 1 < 0 ||
                             !grid[cell.getLocation().x][cell.getLocation().y - 1].isEmpty()) {
                         score-=3;
 
-                        if (cell.getLocation().x + 1 < field.getWidth() &&
+                        if (cell.getLocation().x + 1 >= field.getWidth() ||
                                 !grid[cell.getLocation().x + 1][cell.getLocation().y].isEmpty()) {
                             score--;
                         }
 
-                        if (cell.getLocation().x - 1 >= 0 &&
+                        if (cell.getLocation().x - 1 < 0 ||
                                 !grid[cell.getLocation().x - 1][cell.getLocation().y].isEmpty()) {
                             score--;
                         }
