@@ -93,21 +93,21 @@ public class BotStarter {
         return isValid;
     }
 
-    public boolean isShapeSupported(Shape shape, Field field) {
+    public static boolean isShapeSupported(Shape shape, Field field) {
         Cell[] cells = shape.getBlocks();
 
         for (Cell cell : cells) {
             Point p = cell.getLocation();
             p.setLocation(p.x, p.y + 1);
-            if ( isLocationEmpty(p, field) ) {
-                return false;
+            if ( !isLocationEmpty(p, field) ) {
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
-    public boolean areShapeCellsEmpty(Shape shape, Field field) {
+    public static boolean areShapeCellsEmpty(Shape shape, Field field) {
         Cell[] cells = shape.getBlocks();
 
         for (Cell cell : cells) {
@@ -120,9 +120,9 @@ public class BotStarter {
         return true;
     }
 
-    public boolean isLocationEmpty(Point p, Field field) {
+    public static boolean isLocationEmpty(Point p, Field field) {
         Cell fieldCell = field.getCell(p.x, p.y);
-        return !(fieldCell.isEmpty() || fieldCell.isShape());
+        return fieldCell != null && (fieldCell.isEmpty() || fieldCell.isShape());
     }
 
     public Shape getCurrentShape(BotState state) {
