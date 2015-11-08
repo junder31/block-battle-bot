@@ -18,6 +18,7 @@
 package bot;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import moves.MoveType;
@@ -64,7 +65,7 @@ public class BotParser {
 					StringBuffer output = new StringBuffer();
 					String moveJoin = "";
 					
-					ArrayList<MoveType> moves = bot.getMoves(currentState, Long.valueOf(parts[2]));
+					List<MoveType> moves = bot.getMoves(currentState, Long.valueOf(parts[2]));
 					
 					if(moves.size() > 0)
 						for(MoveType move : moves) {

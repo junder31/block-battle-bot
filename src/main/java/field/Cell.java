@@ -68,7 +68,26 @@ public class Cell {
 		
 		this.location.setLocation(x, y);
 	}
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Cell cell = (Cell) o;
+
+		if (!location.equals(cell.location)) return false;
+		return state == cell.state;
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = location.hashCode();
+		result = 31 * result + state.hashCode();
+		return result;
+	}
+
 	public boolean isShape() {
 		return this.state == CellType.SHAPE;
 	}

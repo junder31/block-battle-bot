@@ -18,6 +18,7 @@
 package field;
 
 import java.awt.Point;
+import java.util.Arrays;
 
 import field.Cell;
 import field.Field;
@@ -83,7 +84,13 @@ public class Shape {
 		
 		this.setBlockLocations();
 	}
-	
+
+    public void oneUp() {
+
+        this.location.y--;
+        this.setBlockLocations();
+    }
+
 	public void oneDown() {
 		
 		this.location.y++;
@@ -101,8 +108,29 @@ public class Shape {
 		this.location.x--;
 		this.setBlockLocations();
 	}
-	
-	/**
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Shape shape1 = (Shape) o;
+
+        if (type != shape1.type) return false;
+        if (!Arrays.deepEquals(shape, shape1.shape)) return false;
+        return location.equals(shape1.location);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = type.hashCode();
+        result = 31 * result + Arrays.deepHashCode(shape);
+        result = 31 * result + location.hashCode();
+        return result;
+    }
+
+    /**
 	 * Used for rotations
 	 * @return transposed matrix of current shape box
 	 */

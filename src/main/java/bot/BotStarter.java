@@ -37,7 +37,6 @@ import java.util.List;
 
 public class BotStarter {
     private static Logger log = new Logger(BotStarter.class.getSimpleName());
-    private static PathFinder pathFinder = new PathFinder();
 
     public BotStarter() {
     }
@@ -49,13 +48,33 @@ public class BotStarter {
      * @param timeout : time to respond
      * @return : a list of moves to execute
      */
-    public ArrayList<MoveType> getMoves(BotState state, long timeout) {
-        ArrayList<MoveType> moves = new ArrayList<>();
+    public List<MoveType> getMoves(BotState state, long timeout) {
+
 
         List<Shape> possiblePlacements = getPossiblePlacements(state);
         log.debug("Possible placements %s", possiblePlacements);
 
-        moves.add(MoveType.DROP);
+        if(possiblePlacements.size() == 0) {
+            throw new RuntimeException("Failed to find any possible placements for " + getCurrentShape(state) + ".");
+        }
+
+        List<MoveType> moves = null;
+
+        for(int i = 0; i < possiblePlacements.size(); i++) {
+            Shape placement = possiblePlacements.get(i);
+            try {
+                moves = new PathFinder(getCurrentShape(state), placement, state.getMyField()).findPath();
+                break;
+            } catch (NoPathAvailableException ex) {
+                log.warn("Could not find a path from %s to %s.", getCurrentShape(state), placement);
+            }
+        }
+
+        if(moves == null) {
+            log.error("Failed to find any series of moves.");
+            moves.add(MoveType.DROP);
+        }
+
         return moves;
     }
 
