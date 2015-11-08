@@ -36,12 +36,14 @@ public class Shape {
 	private Cell[] blocks; // array that contains only the block-cells of the shape
 	private int size;
 	private Point location;
+    private ShapeOrientation orientation;
 	
 	public Shape(ShapeType type, Point location) {
 		this.type = type;
 		this.blocks = new Cell[4];
 		this.location = location;
-		
+		this.orientation = ShapeOrientation.UP;
+
 		setShape();
 		setBlockLocations();
 	}
@@ -55,7 +57,7 @@ public class Shape {
 	/**
 	 * Rotates the shape counter-clockwise
 	 */
-	public void turnLeft() {
+	public Shape turnLeft() {
 
 		Cell[][] temp = this.transposeShape();
 		for(int y=0; y < size; y++) {
@@ -65,12 +67,14 @@ public class Shape {
 		}
 		
 		this.setBlockLocations();
+        this.orientation = ShapeOrientation.values()[this.orientation.ordinal() - 1 % ShapeOrientation.values().length];
+        return this;
 	}
 	
 	/**
 	 * Rotates the shape clockwise
 	 */
-	public void turnRight() {
+	public Shape turnRight() {
 
 		Cell[][] temp = this.transposeShape();
 		for(int x=0; x < size; x++) {
@@ -78,30 +82,36 @@ public class Shape {
 		}
 		
 		this.setBlockLocations();
+        this.orientation = ShapeOrientation.values()[this.orientation.ordinal() + 1 % ShapeOrientation.values().length];
+        return this;
 	}
 
-    public void oneUp() {
+    public Shape oneUp() {
 
         this.location.y--;
         this.setBlockLocations();
+        return this;
     }
 
-	public void oneDown() {
+	public Shape oneDown() {
 		
 		this.location.y++;
 		this.setBlockLocations();
+        return this;
 	}
 	
-	public void oneRight() {
+	public Shape oneRight() {
 		
 		this.location.x++;
 		this.setBlockLocations();
+        return this;
 	}
 	
-	public void oneLeft() {
+	public Shape oneLeft() {
 		
 		this.location.x--;
 		this.setBlockLocations();
+        return this;
 	}
 
     @Override
@@ -255,8 +265,15 @@ public class Shape {
 		return this.type;
 	}
 
-	@Override
+    public ShapeOrientation getOrientation() {
+        return orientation;
+    }
+
+    @Override
 	public String toString() {
-		return "Shape [x: " + location.x + ", y: " + location.y + ", type: " + type + "]";
+		return "Shape [x: " + location.x +
+                ", y: " + location.y +
+                ", type: " + type +
+                ", orientation: " + orientation + "]";
 	}
 }
