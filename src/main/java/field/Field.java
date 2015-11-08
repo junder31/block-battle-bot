@@ -18,6 +18,9 @@
 package field;
 
 import field.Cell;
+import log.Logger;
+
+import java.awt.*;
 
 /**
  * Field class
@@ -29,7 +32,8 @@ import field.Cell;
  */
 
 public class Field {
-	
+	private static Logger log = new Logger(Field.class.getSimpleName());
+
 	private int width;
 	private int height;
 	private Cell grid[][];
@@ -66,6 +70,55 @@ public class Field {
 		if(x < 0 || x >= this.width || y < 0 || y >= this.height)
 			return null;
 		return this.grid[x][y];
+	}
+
+	public boolean isValidPosition(Shape shape) {
+		boolean isValid = true;
+		log.trace("Evaluating position %s", shape.getLocation());
+
+		if(!isShapeSupported(shape)) {
+			log.trace("Invalid position %s. Shape is not supported.", shape.getLocation());
+			isValid = false;
+		} else if(areShapeCellsEmpty(shape)) {
+			log.trace("Invalid position %s. Shape cells are not empty.", shape.getLocation());
+			isValid = false;
+		} else {
+			log.trace("Position %s is valid.", shape.getLocation());
+		}
+
+		return isValid;
+	}
+
+	public boolean isShapeSupported(Shape shape) {
+		Cell[] cells = shape.getBlocks();
+
+		for (Cell cell : cells) {
+			Point p = cell.getLocation();
+			p.setLocation(p.x, p.y + 1);
+			if ( !isLocationEmpty(p) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public boolean areShapeCellsEmpty(Shape shape) {
+		Cell[] cells = shape.getBlocks();
+
+		for (Cell cell : cells) {
+			Point p = cell.getLocation();
+			if ( !isLocationEmpty(p) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public boolean isLocationEmpty(Point p) {
+		Cell fieldCell = getCell(p.x, p.y);
+		return fieldCell != null && (fieldCell.isEmpty() || fieldCell.isShape());
 	}
 	
 	public int getHeight() {

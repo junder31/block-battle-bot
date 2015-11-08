@@ -9,7 +9,7 @@ import java.awt.Point
 /**
  * Created by johnunderwood on 11/8/15.
  */
-class BotStarterSpec extends Specification {
+class FieldSpec extends Specification {
     public Field field
 
     void setup() {
@@ -21,7 +21,7 @@ class BotStarterSpec extends Specification {
         Point p = new Point(1,1)
 
         when:
-        boolean rVal = BotStarter.isLocationEmpty(p, field)
+        boolean rVal = field.isLocationEmpty(p)
 
         then:
         true == rVal
@@ -32,7 +32,7 @@ class BotStarterSpec extends Specification {
         Point p = new Point(-1,-1)
 
         when:
-        boolean rVal = BotStarter.isLocationEmpty(p, field)
+        boolean rVal = field.isLocationEmpty(p)
 
         then:
         false == rVal
@@ -44,7 +44,7 @@ class BotStarterSpec extends Specification {
         field.getCell(1, 1).state = CellType.BLOCK
 
         when:
-        boolean rVal = BotStarter.isLocationEmpty(p, field)
+        boolean rVal = field.isLocationEmpty(p)
 
         then:
         false == rVal

@@ -49,6 +49,10 @@ public class Shape {
 		setShape();
 		setBlockLocations();
 	}
+
+    public Shape(Shape shape) {
+        this(shape.type, shape.location);
+    }
 	
 	// ACTIONS (no checks for errors are performed in the actions!)
 	

@@ -16,8 +16,6 @@
 //    file that was distributed with this source code.
 
 package bot;
-
-import field.Cell;
 import field.Field;
 import field.Shape;
 import field.ShapeType;
@@ -39,6 +37,7 @@ import java.util.List;
 
 public class BotStarter {
     private static Logger log = new Logger(BotStarter.class.getSimpleName());
+    private static PathFinder pathFinder = new PathFinder();
 
     public BotStarter() {
     }
@@ -74,7 +73,7 @@ public class BotStarter {
                         shape.turnRight();
                     }
 
-                    if(isValidPosition(shape, field)) {
+                    if(field.isValidPosition(shape)) {
                         placements.add(shape);
                     }
                 }
@@ -82,55 +81,6 @@ public class BotStarter {
         }
 
         return placements;
-    }
-
-    public boolean isValidPosition(Shape shape, Field field) {
-        boolean isValid = true;
-        log.trace("Evaluating position %s", shape.getLocation());
-
-        if(!isShapeSupported(shape, field)) {
-            log.trace("Invalid position %s. Shape is not supported.", shape.getLocation());
-            isValid = false;
-        } else if(areShapeCellsEmpty(shape, field)) {
-            log.trace("Invalid position %s. Shape cells are not empty.", shape.getLocation());
-            isValid = false;
-        } else {
-            log.trace("Position %s is valid.", shape.getLocation());
-        }
-
-        return isValid;
-    }
-
-    public static boolean isShapeSupported(Shape shape, Field field) {
-        Cell[] cells = shape.getBlocks();
-
-        for (Cell cell : cells) {
-            Point p = cell.getLocation();
-            p.setLocation(p.x, p.y + 1);
-            if ( !isLocationEmpty(p, field) ) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static boolean areShapeCellsEmpty(Shape shape, Field field) {
-        Cell[] cells = shape.getBlocks();
-
-        for (Cell cell : cells) {
-            Point p = cell.getLocation();
-            if ( !isLocationEmpty(p, field) ) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public static boolean isLocationEmpty(Point p, Field field) {
-        Cell fieldCell = field.getCell(p.x, p.y);
-        return fieldCell != null && (fieldCell.isEmpty() || fieldCell.isShape());
     }
 
     public Shape getCurrentShape(BotState state) {
