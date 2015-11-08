@@ -52,7 +52,7 @@ public class Shape {
 	}
 
     public Shape(Shape shape) {
-        this(shape.type, shape.location);
+        this(shape.type, new Point(shape.location));
     }
 	
 	// ACTIONS (no checks for errors are performed in the actions!)
