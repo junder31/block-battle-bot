@@ -30,9 +30,9 @@ class PlacementComparator implements Comparator<Shape> {
         if (c == 0) {
             c = getPerimeter(connected1, field1) - getPerimeter(connected2, field2);
             if (c == 0) {
-                c = s2.getLocation().x - s1.getLocation().x;
+                c = s2.getLocation().y - s1.getLocation().y;
                 if (c == 0) {
-                    c = s2.getLocation().y - s1.getLocation().y;
+                    c = s2.getLocation().x - s1.getLocation().x;
                     if (c == 0) {
                         c = s1.getOrientation().ordinal() - s2.getOrientation().ordinal();
                     }
