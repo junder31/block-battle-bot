@@ -54,6 +54,14 @@ public class Cell {
         return result;
     }
 
+	public int getX() {
+		return location.x;
+	}
+
+	public int getY() {
+		return location.y;
+	}
+
     public boolean isShape() {
 		return this.state == CellType.SHAPE;
 	}

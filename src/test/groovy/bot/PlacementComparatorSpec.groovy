@@ -16,10 +16,10 @@ class PlacementComparatorSpec extends Specification {
     void "test limiting overhang. T shape empty grid"() {
         given:
         Field field = FieldUtil.getEmptyField(4, 4)
-        List<Shape> positions = [new Shape(ShapeType.T, new Point(0,1)).turnRight(),
-                                 new Shape(ShapeType.T, new Point(0,1)).turnRight().turnRight(),
-                                 new Shape(ShapeType.T, new Point(0,2)),
-                                 new Shape(ShapeType.T, new Point(0,1)).turnRight().turnRight().turnRight()]
+        List<Shape> positions = [new Shape(ShapeType.T, new Point(0, 1)).turnRight(),
+                                 new Shape(ShapeType.T, new Point(0, 1)).turnRight().turnRight(),
+                                 new Shape(ShapeType.T, new Point(0, 2)),
+                                 new Shape(ShapeType.T, new Point(0, 1)).turnRight().turnRight().turnRight()]
 
         when:
         Collections.sort(positions, new PlacementComparator(field))
@@ -30,44 +30,120 @@ class PlacementComparatorSpec extends Specification {
 
     void "test limiting overhang. I shape bottom left filled"() {
         given:
-        Field field = new Field(5, 5, "0,0,0,0,0;0,0,0,0,0;0,0,0,0,0;2,0,0,0,0;2,2,0,0,0")
-        List<Shape> positions = [new Shape(ShapeType.I, new Point(0,0)).turnRight(),
-                                 new Shape(ShapeType.I, new Point(0,-1)).turnRight().turnRight(),
-                                 new Shape(ShapeType.I, new Point(0,0))]
+        Field field = new Field(6, 6,
+                "0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0;" +
+                        "2,0,0,0,0,0")
+        List<Shape> positions = [new Shape(ShapeType.I, new Point(-2, 1)).turnRight(),
+                                 new Shape(ShapeType.I, new Point(0, 3)),
+                                 new Shape(ShapeType.I, new Point(1, 4))]
 
         when:
         Collections.sort(positions, new PlacementComparator(field))
 
         then:
-        ShapeOrientation.RIGHT == positions.first().orientation
+        [new Shape(ShapeType.I, new Point(1, 4)),
+                new Shape(ShapeType.I, new Point(-2, 1)).turnRight(),
+                new Shape(ShapeType.I, new Point(0, 3))] == positions
+    }
+
+    void "test minimizing perimeter"() {
+        given:
+        Field field = new Field(10, 20,
+                "0,0,0,1,1,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,2,2,0,0,0,0,2,2;" +
+                        "0,0,0,2,2,0,0,0,2,2")
+        List<Shape> positions = [new Shape(ShapeType.S, new Point(-1, 17)).turnRight(),
+                                 new Shape(ShapeType.S, new Point(4, 17)).turnLeft()]
+
+        when:
+        Collections.sort(positions, new PlacementComparator(field))
+
+        then:
+        [new Shape(ShapeType.S, new Point(4, 17)).turnLeft(),
+         new Shape(ShapeType.S, new Point(-1, 17)).turnRight()] == positions
+    }
+
+    void "test minimizing perimeter 2"() {
+        given:
+        Field field = new Field(10, 20,
+                "0,0,0,1,1,1,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,2,2,0,0,0,0;" +
+                        "0,0,0,2,2,2,2,0,0,0;" +
+                        "0,0,0,2,2,2,2,0,0,2;" +
+                        "2,2,2,2,2,2,0,0,0,2")
+        List<Shape> positions = [new Shape(ShapeType.T, new Point(0, 17)),
+                                 new Shape(ShapeType.T, new Point(6, 18))]
+
+        when:
+        Collections.sort(positions, new PlacementComparator(field))
+
+        then:
+        [new Shape(ShapeType.T, new Point(6, 18)),
+         new Shape(ShapeType.T, new Point(0, 17))] == positions
     }
 
     void "test limiting overhang. I shape bottom partially filled"() {
         given:
         Field field = new Field(10, 20,
                 "0,0,0,0,0,0,0,0,0,0;" +
-                "0,0,0,0,0,0,0,0,0,0;" +
-                "0,0,0,0,0,0,0,0,0,0;" +
-                "0,0,0,0,0,0,0,0,0,0;" +
-                "0,0,0,0,0,0,0,0,0,0;" +
-                "0,0,0,0,0,0,0,0,0,0;" +
-                "0,0,0,0,0,0,0,0,0,0;" +
-                "0,0,0,0,0,0,0,0,0,0;" +
-                "0,0,0,0,0,0,0,0,0,0;" +
-                "0,0,0,0,0,0,0,0,0,0;" +
-                "0,0,0,0,0,0,0,0,0,0;" +
-                "0,0,0,0,0,0,0,0,0,0;" +
-                "0,0,0,0,0,0,0,0,0,0;" +
-                "0,0,0,0,0,0,0,0,0,0;" +
-                "0,0,0,0,0,0,0,0,0,0;" +
-                "0,0,0,0,0,0,0,0,0,0;" +
-                "0,0,0,0,0,0,0,0,0,0;" +
-                "0,0,0,0,0,0,0,0,0,0;" +
-                "0,0,0,0,2,2,2,0,0,0;" +
-                "0,2,2,2,2,2,2,2,0,0")
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,2,2,2,0,0,0;" +
+                        "0,2,2,2,2,2,2,2,0,0")
 
-        List<Shape> positions = [new Shape(ShapeType.I, new Point(-2,16)).turnRight(),
-                                 new Shape(ShapeType.I, new Point(7,16)).turnRight()]
+        List<Shape> positions = [new Shape(ShapeType.I, new Point(-2, 16)).turnRight(),
+                                 new Shape(ShapeType.I, new Point(7, 16)).turnRight()]
 
         when:
         Collections.sort(positions, new PlacementComparator(field))
@@ -99,8 +175,8 @@ class PlacementComparatorSpec extends Specification {
                         "0,0,0,0,0,0,0,0,0,0;" +
                         "0,0,2,2,0,0,0,0,2,2;" +
                         "0,0,0,2,2,0,0,0,2,2")
-        List<Shape> positions = [new Shape(ShapeType.S, new Point(3,16)),
-                                 new Shape(ShapeType.S, new Point(4,17)).turnLeft()]
+        List<Shape> positions = [new Shape(ShapeType.S, new Point(3, 16)),
+                                 new Shape(ShapeType.S, new Point(4, 17)).turnLeft()]
 
         when:
         Collections.sort(positions, new PlacementComparator(field))
@@ -132,17 +208,17 @@ class PlacementComparatorSpec extends Specification {
                         "0,0,0,0,0,0,0,0,0,0;" +
                         "0,2,0,0,0,2,2,2,2,0;" +
                         "2,2,2,0,0,2,2,2,2,0")
-        List<Shape> positions = [new Shape(ShapeType.S, new Point(0,16)).turnRight(),
-                                 new Shape(ShapeType.S, new Point(2,17)).turnLeft()]
+        List<Shape> positions = [new Shape(ShapeType.S, new Point(0, 16)).turnRight(),
+                                 new Shape(ShapeType.S, new Point(2, 17)).turnLeft()]
 
         when:
         Collections.sort(positions, new PlacementComparator(field))
 
         then:
-        new Shape(ShapeType.S, new Point(2,17)).turnLeft() == positions.first()
+        new Shape(ShapeType.S, new Point(2, 17)).turnLeft() == positions.first()
     }
 
-    void "test J piece with position from round 46 564026ea35ec1d12df1daced"() {
+    void "test maximizing y"() {
         given:
         Field field = new Field(10, 20,
                 "0,0,0,1,1,1,0,0,0,0;" +
@@ -165,22 +241,22 @@ class PlacementComparatorSpec extends Specification {
                         "3,3,3,3,3,3,3,3,3,3;" +
                         "3,3,3,3,3,3,3,3,3,3;" +
                         "3,3,3,3,3,3,3,3,3,3")
-        List<Shape> positions = [new Shape(ShapeType.J, new Point(-1,2)).turnRight(),
-                                 new Shape(ShapeType.J, new Point(5,10))]
+        List<Shape> positions = [new Shape(ShapeType.J, new Point(-1, 2)).turnRight(),
+                                 new Shape(ShapeType.J, new Point(5, 10))]
 
         when:
         Collections.sort(positions, new PlacementComparator(field))
 
         then:
-        new Shape(ShapeType.J, new Point(5,10)) == positions.first()
+        new Shape(ShapeType.J, new Point(5, 10)) == positions.first()
     }
 
     void "test limiting height. I shape empty field"() {
         given:
         Field field = FieldUtil.getEmptyField(10, 5)
 
-        List<Shape> positions = [new Shape(ShapeType.I, new Point(3,1)).turnRight(),
-                                 new Shape(ShapeType.I, new Point(3,3))]
+        List<Shape> positions = [new Shape(ShapeType.I, new Point(3, 1)).turnRight(),
+                                 new Shape(ShapeType.I, new Point(3, 3))]
 
         when:
         Collections.sort(positions, new PlacementComparator(field))

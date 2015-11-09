@@ -86,7 +86,7 @@ class BotStarterSpec extends Specification {
         Collections.sort(placements, new PlacementComparator(state.getMyField()));
 
         then:
-        new Shape(ShapeType.S, new Point(3, 17)).turnRight() == placements.first()
+        new Shape(ShapeType.S, new Point(4, 17)).turnLeft() == placements.first()
     }
 
     void "test bade placement from round 4 564000dd1c687b457caf473a"() {
@@ -199,7 +199,7 @@ class BotStarterSpec extends Specification {
         Collections.sort(placements, new PlacementComparator(state.getMyField()));
 
         then:
-        new Shape(ShapeType.S, new Point(1,17)).turnRight() == placements.first()
+        new Shape(ShapeType.S, new Point(2,17)).turnLeft() == placements.first()
     }
 
     void "test bad placement from round 46 564026ea35ec1d12df1daced"() {
