@@ -26,19 +26,23 @@ class PlacementComparator implements Comparator<Shape> {
         Field field2 = new Field(getGrid(s2));
         Set<Cell> connected2 = field2.getConnectedCells(spawn, types);
 
-        int c = connected2.size() - connected1.size();
+        int c = compareCompletedLines(field1, field2);
         if (c == 0) {
-            c = getPerimeter(connected1, field1) - getPerimeter(connected2, field2);
+            c = connected2.size() - connected1.size();
             if (c == 0) {
-                c = s2.getLocation().y - s1.getLocation().y;
+                c = getPerimeter(connected1, field1) - getPerimeter(connected2, field2);
                 if (c == 0) {
-                    c = s2.getLocation().x - s1.getLocation().x;
+                    c = s2.getLocation().y - s1.getLocation().y;
                     if (c == 0) {
-                        c = s1.getOrientation().ordinal() - s2.getOrientation().ordinal();
+                        c = s2.getLocation().x - s1.getLocation().x;
+                        if (c == 0) {
+                            c = s1.getOrientation().ordinal() - s2.getOrientation().ordinal();
+                        }
                     }
                 }
             }
         }
+
 
         return c;
     }
@@ -46,9 +50,9 @@ class PlacementComparator implements Comparator<Shape> {
     private int getPerimeter(Set<Cell> cells, Field field) {
         int perimeter = 0;
 
-        for(Cell cell : cells) {
+        for (Cell cell : cells) {
             Cell l = field.getLeftNeighbor(cell);
-            if(l == null || !l.isEmpty()) {
+            if (l == null || !l.isEmpty()) {
                 perimeter++;
             }
             Cell r = field.getLeftNeighbor(cell);
@@ -56,7 +60,7 @@ class PlacementComparator implements Comparator<Shape> {
                 perimeter++;
             }
             Cell u = field.getUpNeighbor(cell);
-            if(u == null || !u.isEmpty()) {
+            if (u == null || !u.isEmpty()) {
                 perimeter++;
             }
             Cell d = field.getDownNeighbor(cell);
@@ -74,7 +78,7 @@ class PlacementComparator implements Comparator<Shape> {
         for (int x = 0; x < field.getWidth(); x++) {
             for (int y = 0; y < field.getHeight(); y++) {
                 Cell cell = field.getCell(x, y);
-                if(cell.isShape()) {
+                if (cell.isShape()) {
                     cell = new Cell(x, y, CellType.EMPTY);
                 }
                 grid[x][y] = new Cell(x, y, cell.getState());
@@ -88,14 +92,41 @@ class PlacementComparator implements Comparator<Shape> {
         return grid; //removeCompletedLines(grid);
     }
 
-    private Cell[][] removeCompletedLines(Cell[][] grid) {
+    private Field removeCompletedLines(Field field) {
+        List<Integer> completedLines = getCompletedLines(field);
+        Cell[][] grid = new Cell[field.getWidth()][field.getHeight()];
+
+        if (!completedLines.isEmpty()) {
+            int i = 0;
+            int y;
+            for (y = field.getHeight() - 1; y > completedLines.size(); y--) {
+                if (i < completedLines.size() && y == completedLines.get(i)) {
+                    i++;
+                } else {
+                    for (int x = 0; x < field.getWidth(); x++) {
+                        grid[x][y + i] = new Cell(x, y + i, field.getCell(x, y).getState());
+                    }
+                }
+            }
+
+            for (y = 0; y < i; y++) {
+                for (int x = 0; x < field.getWidth(); x++) {
+                    grid[x][y] = new Cell(x, y, CellType.EMPTY);
+                }
+            }
+        }
+
+        return new Field(grid);
+    }
+
+    private List<Integer> getCompletedLines(Field field) {
         List<Integer> completedLines = new ArrayList<>();
 
         for (int y = field.getHeight() - 1; y >= 0; y--) {
             boolean isComplete = true;
 
             for (int x = 0; x < field.getWidth(); x++) {
-                if (grid[x][y].isEmpty()) {
+                if (field.getCell(x, y).isEmpty()) {
                     isComplete = false;
                     break;
                 }
@@ -106,34 +137,25 @@ class PlacementComparator implements Comparator<Shape> {
             }
         }
 
-        if(!completedLines.isEmpty()) {
-            int i = 0;
-            int y;
-            for(y = field.getHeight() - 1; y > completedLines.size(); y--) {
-                if(i < completedLines.size() && y == completedLines.get(i)) {
-                    i++;
-                } else {
-                    for(int x = 0; x < field.getWidth(); x++) {
-                        grid[x][y+i] = new Cell(x, y+i, grid[x][y].getState());
-                    }
-                }
-            }
+        return completedLines;
+    }
 
-            for(y = 0; y < i; y++) {
-                for(int x = 0; x < field.getWidth(); x++) {
-                    grid[x][y] = new Cell(x, y, CellType.EMPTY);
-                }
-            }
+    private int compareCompletedLines(Field field1, Field field2) {
+        int comp1 = getCompletedLines(field1).size();
+        int comp2 = getCompletedLines(field2).size();
+
+        if (comp1 > 2 || comp2 > 2) {
+            return comp2 - comp1;
+        } else {
+            return 0;
         }
-
-        return grid;
     }
 
     public String printGrid(Cell[][] grid) {
         StringBuilder sb = new StringBuilder();
 
-        for(int y = 0; y < field.getHeight(); y++) {
-            for(int x = 0; x < field.getWidth(); x++) {
+        for (int y = 0; y < field.getHeight(); y++) {
+            for (int x = 0; x < field.getWidth(); x++) {
                 sb.append(grid[x][y].getState().ordinal());
                 sb.append(' ');
             }
