@@ -46,7 +46,7 @@ class PlacementComparatorSpec extends Specification {
 
     void "test limiting overhang. I shape bottom left filled"() {
         given:
-        Field field = new Field(4, 4, "0,0,0,0;0,0,0,0;2,0,0,0;2,2,0,0")
+        Field field = new Field(5, 5, "0,0,0,0,0;0,0,0,0,0;0,0,0,0,0;2,0,0,0,0;2,2,0,0,0")
         List<Shape> positions = [new Shape(ShapeType.I, new Point(0,0)).turnRight(),
                                  new Shape(ShapeType.I, new Point(0,-1)).turnRight().turnRight(),
                                  new Shape(ShapeType.I, new Point(0,0))]
