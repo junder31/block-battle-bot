@@ -85,7 +85,7 @@ class PlacementComparator implements Comparator<Shape> {
             grid[cell.getLocation().x][cell.getLocation().y] = cell;
         }
 
-        return removeCompletedLines(grid);
+        return grid; //removeCompletedLines(grid);
     }
 
     private Cell[][] removeCompletedLines(Cell[][] grid) {
