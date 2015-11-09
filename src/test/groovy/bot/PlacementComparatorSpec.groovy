@@ -175,14 +175,14 @@ class PlacementComparatorSpec extends Specification {
                         "0,0,0,0,0,0,0,0,0,0;" +
                         "0,0,2,2,0,0,0,0,2,2;" +
                         "0,0,0,2,2,0,0,0,2,2")
-        List<Shape> positions = [new Shape(ShapeType.S, new Point(3, 16)),
+        List<Shape> positions = [new Shape(ShapeType.S, new Point(5, 18)),
                                  new Shape(ShapeType.S, new Point(4, 17)).turnLeft()]
 
         when:
         Collections.sort(positions, new PlacementComparator(field))
 
         then:
-        ShapeOrientation.LEFT == positions.first().orientation
+        new Shape(ShapeType.S, new Point(4, 17)).turnLeft() == positions.first()
     }
 
     void "test S piece with position from in game 56401f2a1c687b457caf481f"() {

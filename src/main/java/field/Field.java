@@ -130,6 +130,26 @@ public class Field {
         return fieldCell != null && (fieldCell.isEmpty() || fieldCell.isShape());
     }
 
+    public Set<Set<Cell>> getEmptyRegions() {
+        Set<Set<Cell>> emptyRegions = new HashSet<>();
+        Set<Cell> usedCells = new HashSet<>();
+        Set<CellType> empty = new HashSet<>();
+        empty.add(CellType.EMPTY);
+
+        for(int x = 0; x < width; x++) {
+            for(int y = 0; y < height; y++) {
+                Cell cell = getCell(x, y);
+                if(!usedCells.contains(cell) && cell.isEmpty()) {
+                    Set<Cell> region = getConnectedCells(cell, empty);
+                    emptyRegions.add(region);
+                    usedCells.addAll(region);
+                }
+            }
+        }
+
+        return emptyRegions;
+    }
+
     public Set<Cell> getConnectedCells(Point p, Set<CellType> types) {
         return getConnectedCells(getCell(p), types);
     }
