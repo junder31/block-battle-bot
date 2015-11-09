@@ -7,6 +7,7 @@ import field.Point
 import field.Shape
 import field.ShapeOrientation
 import field.ShapeType
+import player.Player
 import spock.lang.Specification
 
 /**
@@ -41,7 +42,7 @@ class PlacementComparatorSpec extends Specification {
         Collections.sort(positions, new PlacementComparator(field))
 
         then:
-        ShapeOrientation.RIGHT == positions.first().orientation
+        ShapeOrientation.LEFT == positions.first().orientation
     }
 
     void "test limiting overhang. I shape bottom left filled"() {
@@ -59,5 +60,43 @@ class PlacementComparatorSpec extends Specification {
 
         then:
         ShapeOrientation.RIGHT == positions.first().orientation
+    }
+
+    void "test limiting overhang. I shape bottom partially filled"() {
+        given:
+        Field field = FieldUtil.getEmptyField(10, 20)
+        field.getCell(1, 19).state = CellType.BLOCK
+        field.getCell(2, 19).state = CellType.BLOCK
+        field.getCell(3, 19).state = CellType.BLOCK
+        field.getCell(4, 19).state = CellType.BLOCK
+        field.getCell(5, 19).state = CellType.BLOCK
+        field.getCell(6, 19).state = CellType.BLOCK
+        field.getCell(7, 19).state = CellType.BLOCK
+        field.getCell(4, 18).state = CellType.BLOCK
+        field.getCell(5, 18).state = CellType.BLOCK
+        field.getCell(6, 18).state = CellType.BLOCK
+
+        List<Shape> positions = [new Shape(ShapeType.I, new Point(-2,16)).turnRight(),
+                                 new Shape(ShapeType.I, new Point(7,16)).turnRight()]
+
+        when:
+        Collections.sort(positions, new PlacementComparator(field))
+
+        then:
+        -2 == positions.first().location.x
+    }
+
+    void "test limiting height. I shape empty field"() {
+        given:
+        Field field = FieldUtil.getEmptyField(10, 5)
+
+        List<Shape> positions = [new Shape(ShapeType.I, new Point(3,1)).turnRight(),
+                                 new Shape(ShapeType.I, new Point(3,3))]
+
+        when:
+        Collections.sort(positions, new PlacementComparator(field))
+
+        then:
+        ShapeOrientation.UP == positions.first().orientation
     }
 }

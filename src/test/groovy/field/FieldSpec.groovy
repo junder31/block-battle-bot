@@ -45,4 +45,17 @@ class FieldSpec extends Specification {
         then:
         false == rVal
     }
+
+    void "test isValidPosition for I on left side of grid"() {
+        given:
+        Field field = FieldUtil.getEmptyField(4,4)
+        Shape shape = new Shape(ShapeType.I, new Point(-1,0))
+        shape.turnLeft()
+
+        when:
+        boolean rVal = field.isValidPosition(shape)
+
+        then:
+        true == rVal
+    }
 }
