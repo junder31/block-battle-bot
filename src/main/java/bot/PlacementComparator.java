@@ -21,14 +21,11 @@ class PlacementComparator implements Comparator<Shape> {
         types.add(CellType.EMPTY);
         field.getConnectedCells(spawn, types).size();
 
-        Field field1 = new Field(getGrid(s1));
-        Field field2 = new Field(getGrid(s2));
+        Field field1 = removeCompletedLines(new Field(getGrid(s1)));
+        Field field2 = removeCompletedLines(new Field(getGrid(s2)));
 
-        int c = compareCompletedLines(field1, field2);
+        int c = calculateOpeness(field2) - calculateOpeness(field1);
         if (c == 0) {
-            field1 = removeCompletedLines(field1);
-            field2 = removeCompletedLines(field2);
-
             Set<Set<Cell>> emptyRegions1 = field1.getEmptyRegions();
             Set<Set<Cell>> emptyRegions2 = field2.getEmptyRegions();
 
@@ -44,10 +41,7 @@ class PlacementComparator implements Comparator<Shape> {
             if (c == 0) {
                 c = emptyRegions1.size() - emptyRegions2.size();
                 if (c == 0) {
-                    c = calculateOpeness(field2) - calculateOpeness(field1);
-                    if (c == 0) {
-                        c = s1.compareTo(s2);
-                    }
+                    c = s1.compareTo(s2);
                 }
             }
         }
@@ -83,7 +77,7 @@ class PlacementComparator implements Comparator<Shape> {
     private int countOverhang(Cell cell, Field field) {
         int count = 0;
 
-        while(cell.getY() - 1 >= 0 && !field.getCell(cell.getX(), cell.getY() - 1).isEmpty()) {
+        while (cell.getY() - 1 >= 0 && !field.getCell(cell.getX(), cell.getY() - 1).isEmpty()) {
             cell = field.getCell(cell.getX(), cell.getY() - 1);
             count++;
         }

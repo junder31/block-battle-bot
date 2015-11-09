@@ -297,4 +297,38 @@ class PlacementComparatorSpec extends Specification {
         then:
         new Shape(ShapeType.Z, new Point(3, 15)).turnRight() == positions.first()
     }
+
+    void "test large J overhang"() {
+        given:
+        Field field = new Field(10, 20,
+                "0,0,0,1,1,1,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,2,2,0,0,0;" +
+                        "0,0,0,0,0,2,2,2,2,0;" +
+                        "0,0,0,0,0,2,2,2,2,0;" +
+                        "2,0,0,0,2,2,2,2,2,0;" +
+                        "0,2,0,2,2,2,2,2,2,0;" +
+                        "2,0,2,2,2,2,2,0,2,2;" +
+                        "2,0,2,2,2,2,2,2,2,2;" +
+                        "0,2,2,2,2,0,2,2,2,2;" +
+                        "2,2,2,2,2,2,2,2,2,0;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3")
+        List<Shape> positions = [new Shape(ShapeType.J, new Point(7, 5)).turnRight().turnRight(),
+                                 new Shape(ShapeType.J, new Point(1, 8)),
+                                 new Shape(ShapeType.J, new Point(3, 6)).turnLeft()]
+
+        when:
+        Collections.sort(positions, new PlacementComparator(field))
+
+        then:
+        new Shape(ShapeType.J, new Point(3, 6)).turnLeft() == positions.first()
+    }
 }
