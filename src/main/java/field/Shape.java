@@ -45,7 +45,7 @@ public class Shape {
     }
 
     public Shape(Shape shape) {
-        this(shape.type, new Point(shape.location));
+        this(shape.type, shape.location, shape.cells, shape.orientation);
     }
 
     private Shape(ShapeType type, Point location, boolean[][] cells, ShapeOrientation orientation) {

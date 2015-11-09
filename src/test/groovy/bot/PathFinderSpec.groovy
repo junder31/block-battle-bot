@@ -1,12 +1,9 @@
 package bot
 
-import field.Field
-import field.FieldUtil
-import field.Point
-import field.Shape
-import field.ShapeType
+import field.*
 import moves.MoveType
 import spock.lang.Specification
+
 /**
  * Created by johnunderwood on 11/8/15.
  */
@@ -15,7 +12,7 @@ class PathFinderSpec extends Specification {
     void "test finding a path straight down on small empty field"() {
         given:
         Field field = FieldUtil.getEmptyField(4, 4)
-        Shape start = new Shape(ShapeType.Z, new Point(1,-1))
+        Shape start = new Shape(ShapeType.Z, new Point(1, -1))
         Shape end = new Shape(ShapeType.Z, new Point(1, 2))
 
         when:
@@ -30,7 +27,7 @@ class PathFinderSpec extends Specification {
     void "test finding a path straight down on full size empty field"() {
         given:
         Field field = FieldUtil.getEmptyField(10, 20)
-        Shape start = new Shape(ShapeType.Z, new Point(1,-1))
+        Shape start = new Shape(ShapeType.Z, new Point(1, -1))
         Shape end = new Shape(ShapeType.Z, new Point(1, 18))
 
         when:
@@ -45,7 +42,7 @@ class PathFinderSpec extends Specification {
     void "test finding a path offset on a small field"() {
         given:
         Field field = FieldUtil.getEmptyField(4, 4)
-        Shape start = new Shape(ShapeType.Z, new Point(1,-1))
+        Shape start = new Shape(ShapeType.Z, new Point(1, -1))
         Shape end = new Shape(ShapeType.Z, new Point(0, 2))
 
         when:
@@ -58,5 +55,36 @@ class PathFinderSpec extends Specification {
         1 == moves.findAll { it == MoveType.LEFT }.size()
     }
 
+    void "test impossible path from round 3 563ffd5f35ec1d12df1dab35"() {
+        given:
+        Field field = new Field(10, 20,
+                        "0,0,0,1,1,1,1,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,2,2,2,2,0,0,0;" +
+                        "0,0,2,2,2,2,0,0,0,0")
+        Shape start = new Shape(ShapeType.I, new Point(3, -1))
+        Shape end = new Shape(ShapeType.I, new Point(6, 17)).turnRight().turnRight()
 
+        when:
+        new PathFinder(start, end, field).findPath()
+
+        then:
+        thrown(NoPathAvailableException)
+    }
 }
