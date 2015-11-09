@@ -163,4 +163,42 @@ class BotStarterSpec extends Specification {
         then:
         new Shape(ShapeType.T, new Point(6, 18)) == placements.first()
     }
+
+    void "test bad placement from round 4 56401f2a1c687b457caf481f"() {
+        given:
+        Field field = new Field(10, 20,
+                        "0,0,0,1,1,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,2,0,0,0,2,2,2,2,0;" +
+                        "2,2,2,0,0,2,2,2,2,0")
+        BotState state = new BotState();
+        Player player = new Player("p")
+        player.field = field
+        state.myBot = player
+        state.currentShape = ShapeType.S
+        state.shapeLocation = new Point(3, -1)
+
+        when:
+        def placements = botStarter.getPossiblePlacements(state)
+        Collections.sort(placements, new PlacementComparator(state.getMyField()));
+
+        then:
+        new Shape(ShapeType.S, new Point(1,17)).turnRight() == placements.first()
+    }
 }
