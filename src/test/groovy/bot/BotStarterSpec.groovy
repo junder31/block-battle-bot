@@ -54,7 +54,7 @@ class BotStarterSpec extends Specification {
     void "test unintended mutation from game"() {
         given:
         Field field = new Field(10, 20,
-                "0,0,0,1,1,0,0,0,0,0;" +
+                        "0,0,0,1,1,0,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
@@ -86,14 +86,13 @@ class BotStarterSpec extends Specification {
         Collections.sort(placements, new PlacementComparator(state.getMyField()));
 
         then:
-        new Shape(ShapeType.S, new Point(4, 17)).turnLeft() == placements.first() ||
-                new Shape(ShapeType.S, new Point(3, 17)).turnRight() == placements.first()
+        new Shape(ShapeType.S, new Point(3, 17)).turnRight() == placements.first()
     }
 
     void "test bade placement from round 4 564000dd1c687b457caf473a"() {
         given:
         Field field = new Field(10, 20,
-                "0,0,0,1,1,1,0,0,0,0;" +
+                        "0,0,0,1,1,1,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
@@ -130,7 +129,7 @@ class BotStarterSpec extends Specification {
     void "test bad placement from round 8 5640005c35ec1d12df1dab51"() {
         given:
         Field field = new Field(10, 20,
-                "0,0,0,1,1,1,0,0,0,0;" +
+                        "0,0,0,1,1,1,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +

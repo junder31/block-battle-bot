@@ -27,14 +27,8 @@ package field;
  */
 
 public class Cell {
-
 	private final Point location;
 	private final CellType state;
-	
-	public Cell() {
-		this.location = null;
-		this.state = CellType.EMPTY;
-	}
 
 	public Cell(int x, int y, CellType type) {
 		this.location = new Point(x, y);

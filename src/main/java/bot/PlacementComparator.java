@@ -27,6 +27,15 @@ class PlacementComparator implements Comparator<Shape> {
             c = compareLinesCompleted(grid1, grid2);
             if (c == 0) {
                 c = compareHeight(grid1, grid2);
+                if(c == 0) {
+                    c = s1.getLocation().x - s2.getLocation().x;
+                    if(c == 0) {
+                        c = s2.getLocation().y - s2.getLocation().y;
+                        if(c == 0) {
+                            c = s1.getOrientation().ordinal() - s2.getOrientation().ordinal();
+                        }
+                    }
+                }
             }
         }
 
