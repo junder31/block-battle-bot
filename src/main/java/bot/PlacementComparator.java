@@ -27,11 +27,11 @@ class PlacementComparator implements Comparator<Shape> {
             c = compareLinesCompleted(grid1, grid2);
             if (c == 0) {
                 c = compareHeight(grid1, grid2);
-                if(c == 0) {
+                if (c == 0) {
                     c = s1.getLocation().x - s2.getLocation().x;
-                    if(c == 0) {
+                    if (c == 0) {
                         c = s2.getLocation().y - s2.getLocation().y;
-                        if(c == 0) {
+                        if (c == 0) {
                             c = s1.getOrientation().ordinal() - s2.getOrientation().ordinal();
                         }
                     }
@@ -89,15 +89,15 @@ class PlacementComparator implements Comparator<Shape> {
 
                     if (cell.getLocation().x + 1 < field.getWidth() &&
                             grid[cell.getLocation().x + 1][cell.getLocation().y].isEmpty() &&
-                            (cell.getLocation().x + 2 >= field.getWidth() ||
-                                    !grid[cell.getLocation().x + 2][cell.getLocation().y].isEmpty())) {
+                            cell.getLocation().x + 2 < field.getWidth() &&
+                            !grid[cell.getLocation().x + 2][cell.getLocation().y].isEmpty()) {
                         score--;
                     }
 
                     if (cell.getLocation().x - 1 >= 0 &&
                             grid[cell.getLocation().x - 1][cell.getLocation().y].isEmpty() &&
-                            (cell.getLocation().x - 2 < 0 ||
-                                    !grid[cell.getLocation().x - 2][cell.getLocation().y].isEmpty())) {
+                            cell.getLocation().x - 2 > 0 &&
+                            !grid[cell.getLocation().x - 2][cell.getLocation().y].isEmpty()) {
                         score--;
                     }
                 }

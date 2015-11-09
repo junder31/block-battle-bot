@@ -1,6 +1,5 @@
 package bot
 
-import field.CellType
 import field.Field
 import field.FieldUtil
 import field.Point
@@ -41,7 +40,8 @@ class PlacementComparatorSpec extends Specification {
         Collections.sort(positions, new PlacementComparator(field))
 
         then:
-        ShapeOrientation.LEFT == positions.first().orientation
+        ShapeOrientation.LEFT == positions.first().orientation ||
+                ShapeOrientation.RIGHT == positions.first().orientation
     }
 
     void "test limiting overhang. I shape bottom left filled"() {
