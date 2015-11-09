@@ -264,4 +264,37 @@ class PlacementComparatorSpec extends Specification {
         then:
         ShapeOrientation.UP == positions.first().orientation
     }
+
+    void "test Z that shouldn't have overhung"() {
+        given:
+        Field field = new Field(10, 20,
+                "0,0,0,0,1,1,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,2,2,2;" +
+                        "0,0,0,0,0,0,0,2,2,2;" +
+                        "0,0,0,0,0,2,2,2,2,2;" +
+                        "0,0,2,2,2,2,2,2,2,2;" +
+                        "2,2,0,2,2,2,2,2,2,2")
+        List<Shape> positions = [new Shape(ShapeType.Z, new Point(3, 15)).turnRight(),
+                                 new Shape(ShapeType.Z, new Point(2, 16))]
+
+        when:
+        Collections.sort(positions, new PlacementComparator(field))
+
+        then:
+        new Shape(ShapeType.Z, new Point(3, 15)).turnRight() == positions.first()
+    }
 }

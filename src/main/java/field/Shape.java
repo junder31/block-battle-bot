@@ -29,7 +29,7 @@ import java.util.Arrays;
  * @author Jim van Eeden <jim@starapple.nl>
  */
 
-public class Shape {
+public class Shape implements Comparable<Shape> {
 
     public final ShapeType type;
     private final boolean[][] cells; // 2-dimensional bounding box: a matrix that contains the block-cells of the cells
@@ -229,5 +229,18 @@ public class Shape {
                 ", y: " + location.y +
                 ", type: " + type +
                 ", orientation: " + orientation + "]";
+    }
+
+    @Override
+    public int compareTo(Shape o) {
+        int c = o.getLocation().y - this.getLocation().y;
+        if (c == 0) {
+            c = o.getLocation().x - this.getLocation().x;
+            if (c == 0) {
+                c = this.getOrientation().ordinal() - o.getOrientation().ordinal();
+            }
+        }
+
+        return c;
     }
 }

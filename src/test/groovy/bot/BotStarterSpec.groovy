@@ -42,7 +42,7 @@ class BotStarterSpec extends Specification {
         state.currentShape = ShapeType.I
         state.shapeLocation = new Point(0, -1)
 
-        Shape expectedShape = new Shape(ShapeType.I, new Point(-1,0)).turnLeft()
+        Shape expectedShape = new Shape(ShapeType.I, new Point(-1, 0)).turnLeft()
 
         when:
         def placements = botStarter.getPossiblePlacements(state)
@@ -54,7 +54,7 @@ class BotStarterSpec extends Specification {
     void "test unintended mutation from game"() {
         given:
         Field field = new Field(10, 20,
-                        "0,0,0,1,1,0,0,0,0,0;" +
+                "0,0,0,1,1,0,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
@@ -92,7 +92,7 @@ class BotStarterSpec extends Specification {
     void "test bade placement from round 4 564000dd1c687b457caf473a"() {
         given:
         Field field = new Field(10, 20,
-                        "0,0,0,1,1,1,0,0,0,0;" +
+                "0,0,0,1,1,1,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
@@ -129,7 +129,7 @@ class BotStarterSpec extends Specification {
     void "test bad placement from round 8 5640005c35ec1d12df1dab51"() {
         given:
         Field field = new Field(10, 20,
-                        "0,0,0,1,1,1,0,0,0,0;" +
+                "0,0,0,1,1,1,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
@@ -167,7 +167,7 @@ class BotStarterSpec extends Specification {
     void "test bad placement from round 4 56401f2a1c687b457caf481f"() {
         given:
         Field field = new Field(10, 20,
-                        "0,0,0,1,1,0,0,0,0,0;" +
+                "0,0,0,1,1,0,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
@@ -199,13 +199,13 @@ class BotStarterSpec extends Specification {
         Collections.sort(placements, new PlacementComparator(state.getMyField()));
 
         then:
-        new Shape(ShapeType.S, new Point(2,17)).turnLeft() == placements.first()
+        new Shape(ShapeType.S, new Point(2, 17)).turnLeft() == placements.first()
     }
 
     void "test bad placement from round 46 564026ea35ec1d12df1daced"() {
         given:
         Field field = new Field(10, 20,
-                        "0,0,0,1,1,1,0,0,0,0;" +
+                "0,0,0,1,1,1,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
@@ -237,6 +237,44 @@ class BotStarterSpec extends Specification {
         Collections.sort(placements, new PlacementComparator(state.getMyField()));
 
         then:
-        new Shape(ShapeType.J, new Point(5,10)) == placements.first()
+        new Shape(ShapeType.J, new Point(5, 10)) == placements.first()
+    }
+
+    void "test bad placement from round 11 5640ff301c687b42e84f4c00"() {
+        given:
+        Field field = new Field(10, 20,
+                "0,0,0,0,1,1,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,2,2,2;" +
+                        "0,0,0,0,0,0,0,2,2,2;" +
+                        "0,0,0,0,0,2,2,2,2,2;" +
+                        "0,0,2,2,2,2,2,2,2,2;" +
+                        "2,2,0,2,2,2,2,2,2,2")
+        BotState state = new BotState();
+        Player player = new Player("p")
+        player.field = field
+        state.myBot = player
+        state.currentShape = ShapeType.Z
+        state.shapeLocation = new Point(3, -1)
+
+        when:
+        def placements = botStarter.getPossiblePlacements(state)
+        Collections.sort(placements, new PlacementComparator(state.getMyField()));
+
+        then:
+        new Shape(ShapeType.Z, new Point(1, 16)).turnLeft() == placements.first()
     }
 }

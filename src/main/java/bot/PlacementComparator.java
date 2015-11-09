@@ -44,18 +44,40 @@ class PlacementComparator implements Comparator<Shape> {
             if (c == 0) {
                 c = emptyRegions1.size() - emptyRegions2.size();
                 if (c == 0) {
-                    c = s2.getLocation().y - s1.getLocation().y;
+                    c = calculateOpeness(field2) - calculateOpeness(field1);
                     if (c == 0) {
-                        c = s2.getLocation().x - s1.getLocation().x;
-                        if (c == 0) {
-                            c = s1.getOrientation().ordinal() - s2.getOrientation().ordinal();
-                        }
+                        c = s1.compareTo(s2);
                     }
                 }
             }
         }
 
         return c;
+    }
+
+    private int calculateOpeness(Field field) {
+        int score = 0;
+
+        for (int y = 0; y < field.getHeight(); y++) {
+            for (int x = 0; x < field.getWidth(); x++) {
+                Cell cell = field.getCell(x, y);
+                if (cell.isEmpty()) {
+                    if (y - 1 >= 0 && !field.getCell(x, y - 1).isEmpty()) {
+                        score -= 20;
+                    }
+
+                    if (x + 1 < field.getWidth() && !field.getCell(x + 1, y).isEmpty()) {
+                        score -= 2;
+                    }
+
+                    if (x - 1 >= 0 && !field.getCell(x - 1, y).isEmpty()) {
+                        score -= 2;
+                    }
+                }
+            }
+        }
+
+        return score;
     }
 
     private int getPerimeter(Set<Cell> cells, Field field) {
