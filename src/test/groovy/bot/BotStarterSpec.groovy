@@ -5,6 +5,7 @@ import field.FieldUtil
 import field.Point
 import field.Shape
 import field.ShapeType
+import moves.MoveType
 import player.Player
 import spock.lang.Specification
 
@@ -87,5 +88,80 @@ class BotStarterSpec extends Specification {
         then:
         new Shape(ShapeType.S, new Point(4, 17)).turnLeft() == placements.first() ||
                 new Shape(ShapeType.S, new Point(3, 17)).turnRight() == placements.first()
+    }
+
+    void "test bade placement from round 4 564000dd1c687b457caf473a"() {
+        given:
+        Field field = new Field(10, 20,
+                "0,0,0,1,1,1,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,2,2,0,0,0,0,0,0;" +
+                        "2,2,2,2,2,0,0,0,0,0;" +
+                        "2,2,2,2,2,0,0,0,0,0")
+        BotState state = new BotState();
+        Player player = new Player("p")
+        player.field = field
+        state.myBot = player
+        state.currentShape = ShapeType.L
+        state.shapeLocation = new Point(3, -1)
+
+        when:
+        def moves = botStarter.getMoves(state, 100000)
+
+        then:
+        moves.any { it == MoveType.TURNLEFT || it == MoveType.TURNRIGHT }
+    }
+
+    void "test bad placement from round 8 5640005c35ec1d12df1dab51"() {
+        given:
+        Field field = new Field(10, 20,
+                "0,0,0,1,1,1,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,2,2,0,0,0,0;" +
+                        "0,0,0,2,2,2,2,0,0,0;" +
+                        "0,0,0,2,2,2,2,0,0,2;" +
+                        "2,2,2,2,2,2,0,0,0,2")
+        BotState state = new BotState();
+        Player player = new Player("p")
+        player.field = field
+        state.myBot = player
+        state.currentShape = ShapeType.T
+        state.shapeLocation = new Point(3, -1)
+
+        when:
+        def placements = botStarter.getPossiblePlacements(state)
+        Collections.sort(placements, new PlacementComparator(state.getMyField()));
+
+        then:
+        new Shape(ShapeType.T, new Point(6, 18)) == placements.first()
     }
 }
