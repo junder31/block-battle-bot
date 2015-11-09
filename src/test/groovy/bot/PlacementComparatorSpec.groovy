@@ -142,6 +142,39 @@ class PlacementComparatorSpec extends Specification {
         new Shape(ShapeType.S, new Point(2,17)).turnLeft() == positions.first()
     }
 
+    void "test J piece with position from round 46 564026ea35ec1d12df1daced"() {
+        given:
+        Field field = new Field(10, 20,
+                "0,0,0,1,1,1,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "2,0,0,0,0,0,0,0,0,0;" +
+                        "2,2,0,0,0,0,0,0,0,2;" +
+                        "2,2,2,0,0,0,0,0,0,2;" +
+                        "2,2,2,0,0,0,0,0,2,2;" +
+                        "2,2,2,0,0,0,0,0,2,2;" +
+                        "2,2,2,2,0,0,0,0,2,2;" +
+                        "2,2,2,2,2,0,0,0,2,2;" +
+                        "2,2,2,2,0,2,2,2,2,2;" +
+                        "2,2,2,2,2,0,0,2,2,2;" +
+                        "2,0,2,2,2,2,2,2,2,2;" +
+                        "2,2,2,2,0,2,0,2,2,2;" +
+                        "2,2,2,2,2,2,2,2,0,2;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3")
+        List<Shape> positions = [new Shape(ShapeType.J, new Point(-1,2)).turnRight(),
+                                 new Shape(ShapeType.J, new Point(5,10))]
+
+        when:
+        Collections.sort(positions, new PlacementComparator(field))
+
+        then:
+        new Shape(ShapeType.J, new Point(5,10)) == positions.first()
+    }
+
     void "test limiting height. I shape empty field"() {
         given:
         Field field = FieldUtil.getEmptyField(10, 5)

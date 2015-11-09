@@ -201,4 +201,42 @@ class BotStarterSpec extends Specification {
         then:
         new Shape(ShapeType.S, new Point(1,17)).turnRight() == placements.first()
     }
+
+    void "test bad placement from round 46 564026ea35ec1d12df1daced"() {
+        given:
+        Field field = new Field(10, 20,
+                        "0,0,0,1,1,1,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "2,0,0,0,0,0,0,0,0,0;" +
+                        "2,2,0,0,0,0,0,0,0,2;" +
+                        "2,2,2,0,0,0,0,0,0,2;" +
+                        "2,2,2,0,0,0,0,0,2,2;" +
+                        "2,2,2,0,0,0,0,0,2,2;" +
+                        "2,2,2,2,0,0,0,0,2,2;" +
+                        "2,2,2,2,2,0,0,0,2,2;" +
+                        "2,2,2,2,0,2,2,2,2,2;" +
+                        "2,2,2,2,2,0,0,2,2,2;" +
+                        "2,0,2,2,2,2,2,2,2,2;" +
+                        "2,2,2,2,0,2,0,2,2,2;" +
+                        "2,2,2,2,2,2,2,2,0,2;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3")
+        BotState state = new BotState();
+        Player player = new Player("p")
+        player.field = field
+        state.myBot = player
+        state.currentShape = ShapeType.J
+        state.shapeLocation = new Point(3, -1)
+
+        when:
+        def placements = botStarter.getPossiblePlacements(state)
+        Collections.sort(placements, new PlacementComparator(state.getMyField()));
+
+        then:
+        new Shape(ShapeType.J, new Point(5,10)) == placements.first()
+    }
 }
