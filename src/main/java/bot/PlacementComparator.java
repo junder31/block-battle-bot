@@ -5,7 +5,9 @@ import field.CellType;
 import field.Field;
 import field.Shape;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by johnunderwood on 11/8/15.
@@ -24,16 +26,13 @@ class PlacementComparator implements Comparator<Shape> {
 
         int c = compareOpeness(grid1, grid2);
         if (c == 0) {
-            c = compareLinesCompleted(grid1, grid2);
+            c = compareHeight(grid1, grid2);
             if (c == 0) {
-                c = compareHeight(grid1, grid2);
+                c = s1.getLocation().x - s2.getLocation().x;
                 if (c == 0) {
-                    c = s1.getLocation().x - s2.getLocation().x;
+                    c = s2.getLocation().y - s2.getLocation().y;
                     if (c == 0) {
-                        c = s2.getLocation().y - s2.getLocation().y;
-                        if (c == 0) {
-                            c = s1.getOrientation().ordinal() - s2.getOrientation().ordinal();
-                        }
+                        c = s1.getOrientation().ordinal() - s2.getOrientation().ordinal();
                     }
                 }
             }
@@ -52,13 +51,10 @@ class PlacementComparator implements Comparator<Shape> {
         }
 
         for (Cell cell : shape.getBlocks()) {
-            grid[cell.getLocation().x][cell.getLocation().y] = new Cell(
-                    cell.getLocation().x,
-                    cell.getLocation().y,
-                    CellType.SHAPE);
+            grid[cell.getLocation().x][cell.getLocation().y] = cell;
         }
 
-        return grid;
+        return removeCompletedLines(grid);
     }
 
     private int compareOpeness(Cell[][] grid1, Cell[][] grid2) {
@@ -74,15 +70,31 @@ class PlacementComparator implements Comparator<Shape> {
                 if (!cell.isEmpty()) {
                     if (cell.getLocation().y + 1 < field.getHeight() &&
                             grid[cell.getLocation().x][cell.getLocation().y + 1].isEmpty()) {
-                        score -= 3;
+                        score -= 20;
 
-                        if ((cell.getLocation().x + 1 >= field.getWidth() ||
-                                !grid[cell.getLocation().x + 1][cell.getLocation().y + 1].isEmpty())
-                                && (cell.getLocation().x - 1 < 0 ||
-                                !grid[cell.getLocation().x - 1][cell.getLocation().y + 1].isEmpty())
-                                ) {
-                            score -= 5;
+                        if (cell.getLocation().x + 1 >= field.getWidth() ||
+                                !grid[cell.getLocation().x + 1][cell.getLocation().y + 1].isEmpty()) {
+                            score--;
                         }
+
+                        if (cell.getLocation().x - 1 < 0 ||
+                                !grid[cell.getLocation().x - 1][cell.getLocation().y + 1].isEmpty()) {
+                            score--;
+                        }
+                    }
+
+                    if (cell.getLocation().x + 1 < field.getWidth() &&
+                            grid[cell.getLocation().x + 1][cell.getLocation().y].isEmpty() &&
+                            cell.getLocation().x + 2 < field.getWidth() &&
+                            !grid[cell.getLocation().x + 2][cell.getLocation().y].isEmpty()) {
+                        score--;
+                    }
+
+                    if (cell.getLocation().x - 1 >= 0 &&
+                            grid[cell.getLocation().x - 1][cell.getLocation().y].isEmpty() &&
+                            cell.getLocation().x - 2 > 0 &&
+                            !grid[cell.getLocation().x - 2][cell.getLocation().y].isEmpty()) {
+                        score--;
                     }
                 }
             }
@@ -91,14 +103,10 @@ class PlacementComparator implements Comparator<Shape> {
         return score;
     }
 
-    private int compareLinesCompleted(Cell[][] grid1, Cell[][] grid2) {
-        return calculateLinesCompleted(grid2) - calculateLinesCompleted(grid1);
-    }
+    private Cell[][] removeCompletedLines(Cell[][] grid) {
+        List<Integer> completedLines = new ArrayList<>();
 
-    private int calculateLinesCompleted(Cell[][] grid) {
-        int score = 0;
-
-        for (int y = field.getHeight() - 1; y >= 0; y--) {
+        for (int y = 0; y < field.getHeight(); y++) {
             boolean isComplete = true;
 
             for (int x = 0; x < field.getWidth(); x++) {
@@ -109,11 +117,31 @@ class PlacementComparator implements Comparator<Shape> {
             }
 
             if (isComplete) {
-                score++;
+                completedLines.add(y);
             }
         }
 
-        return score;
+        if(!completedLines.isEmpty()) {
+            int i = 0;
+            int y;
+            for(y = field.getHeight() - 1; y > completedLines.size(); y--) {
+                if(i < completedLines.size() && y == completedLines.get(i)) {
+                    i++;
+                }
+
+                for(int x = 0; x < field.getWidth(); x++) {
+                    grid[x][y] = grid[x][y-i];
+                }
+            }
+
+            for(; y > 0; y--) {
+                for(int x = 0; x < field.getWidth(); x++) {
+                    grid[x][y] = new Cell(x, y, CellType.EMPTY);
+                }
+            }
+        }
+
+        return grid;
     }
 
     private int compareHeight(Cell[][] grid1, Cell[][] grid2) {
@@ -141,5 +169,19 @@ class PlacementComparator implements Comparator<Shape> {
         }
 
         return score;
+    }
+
+    public String printGrid(Cell[][] grid) {
+        StringBuilder sb = new StringBuilder();
+
+        for(int y = 0; y < field.getHeight(); y++) {
+            for(int x = 0; x < field.getWidth(); x++) {
+                sb.append(grid[x][y].getState().ordinal());
+                sb.append(' ');
+            }
+            sb.append('\n');
+        }
+
+        return sb.toString();
     }
 }
