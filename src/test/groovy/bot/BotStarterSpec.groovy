@@ -41,13 +41,51 @@ class BotStarterSpec extends Specification {
         state.currentShape = ShapeType.I
         state.shapeLocation = new Point(0, -1)
 
-        Shape expectedShape = new Shape(ShapeType.I, new Point(-1,0))
-        expectedShape.turnLeft()
+        Shape expectedShape = new Shape(ShapeType.I, new Point(-1,0)).turnLeft()
 
         when:
         def placements = botStarter.getPossiblePlacements(state)
 
         then:
         placements.contains(expectedShape)
+    }
+
+    void "test unintended mutation from game"() {
+        given:
+        Field field = new Field(10, 20,
+                "0,0,0,1,1,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,2,2,0,0,0,0,2,2;" +
+                        "0,0,0,2,2,0,0,0,2,2")
+        BotState state = new BotState();
+        Player player = new Player("p")
+        player.field = field
+        state.myBot = player
+        state.currentShape = ShapeType.S
+        state.shapeLocation = new Point(0, -1)
+
+        when:
+        def placements = botStarter.getPossiblePlacements(state)
+        Collections.sort(placements, new PlacementComparator(state.getMyField()));
+
+        then:
+        new Shape(ShapeType.S, new Point(4, 17)).turnLeft() == placements.first() ||
+                new Shape(ShapeType.S, new Point(3, 17)).turnRight() == placements.first()
     }
 }

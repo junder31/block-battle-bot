@@ -26,5 +26,11 @@ package field;
  */
 
 public enum ShapeType {
-	I, J, L, O, S, T, Z, NONE;
+	I(4), J(3), L(3), O(2), S(3), T(3), Z(3);
+
+	public final int size;
+
+	ShapeType(int size) {
+		this.size = size;
+	}
 }

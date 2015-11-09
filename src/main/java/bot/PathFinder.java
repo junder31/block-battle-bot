@@ -79,23 +79,25 @@ public class PathFinder {
             LinkedList<MoveType> newMoves = new LinkedList<>(moves);
             newMoves.push(move);
 
-            Shape newShape = new Shape(shape);
+            Shape newShape;
             switch (move) {
                 case DOWN:
-                    newShape.oneUp();
+                    newShape = shape.oneUp();
                     break;
                 case LEFT:
-                    newShape.oneRight();
+                    newShape = shape.oneRight();
                     break;
                 case RIGHT:
-                    newShape.oneLeft();
+                    newShape = shape.oneLeft();
                     break;
                 case TURNRIGHT:
-                    newShape.turnLeft();
+                    newShape = shape.turnLeft();
                     break;
                 case TURNLEFT:
-                    newShape.turnRight();
+                    newShape = shape.turnRight();
                     break;
+                default:
+                    newShape = shape;
             }
 
             return new Path(newMoves, newShape);

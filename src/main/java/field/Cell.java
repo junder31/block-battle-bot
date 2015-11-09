@@ -28,8 +28,8 @@ package field;
 
 public class Cell {
 
-	private Point location;
-	private CellType state;
+	private final Point location;
+	private final CellType state;
 	
 	public Cell() {
 		this.location = null;
@@ -39,23 +39,6 @@ public class Cell {
 	public Cell(int x, int y, CellType type) {
 		this.location = new Point(x, y);
 		this.state = type;
-	}
-	
-	public boolean isOutOfBoundaries(Field f) {
-		if(this.location.x >= f.getWidth() || this.location.x < 0 || this.location.y >= f.getHeight()) 
-			return true;
-		return false;
-	}
-
-	public boolean hasCollision(Field f) {
-		Cell cell = f.getCell(this.location.x, this.location.y);
-		if(cell == null)
-			return false;
-		return (this.state == CellType.SHAPE && (cell.isSolid() || cell.isBlock()));
-	}
-	
-	public void setShape() {
-		this.state = CellType.SHAPE;
 	}
 
     @Override
@@ -76,10 +59,6 @@ public class Cell {
         result = 31 * result + state.hashCode();
         return result;
     }
-
-    public void setLocation(int x, int y) {
-		this.location = new Point(x, y);
-	}
 
     public boolean isShape() {
 		return this.state == CellType.SHAPE;

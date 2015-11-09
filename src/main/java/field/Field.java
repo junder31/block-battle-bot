@@ -31,8 +31,8 @@ import log.Logger;
 public class Field {
 	private static Logger log = new Logger(Field.class.getSimpleName());
 
-	private int width;
-	private int height;
+	private final int width;
+	private final int height;
 	private Cell grid[][];
 
 	public Field(int width, int height, String fieldString) {
