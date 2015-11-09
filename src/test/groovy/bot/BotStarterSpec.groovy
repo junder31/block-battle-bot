@@ -275,6 +275,6 @@ class BotStarterSpec extends Specification {
         Collections.sort(placements, new PlacementComparator(state.getMyField()));
 
         then:
-        new Shape(ShapeType.Z, new Point(1, 16)).turnLeft() == placements.first()
+        new Shape(ShapeType.Z, new Point(4, 15)).turnLeft() == placements.first()
     }
 }

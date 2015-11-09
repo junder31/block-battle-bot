@@ -63,7 +63,7 @@ class PlacementComparator implements Comparator<Shape> {
                 Cell cell = field.getCell(x, y);
                 if (cell.isEmpty()) {
                     if (y - 1 >= 0 && !field.getCell(x, y - 1).isEmpty()) {
-                        score -= 20;
+                        score -= 20 * countOverhang(cell, field);
                     }
 
                     if (x + 1 < field.getWidth() && !field.getCell(x + 1, y).isEmpty()) {
@@ -78,6 +78,17 @@ class PlacementComparator implements Comparator<Shape> {
         }
 
         return score;
+    }
+
+    private int countOverhang(Cell cell, Field field) {
+        int count = 0;
+
+        while(cell.getY() - 1 >= 0 && !field.getCell(cell.getX(), cell.getY() - 1).isEmpty()) {
+            cell = field.getCell(cell.getX(), cell.getY() - 1);
+            count++;
+        }
+
+        return count;
     }
 
     private int getPerimeter(Set<Cell> cells, Field field) {
