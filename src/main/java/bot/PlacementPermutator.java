@@ -17,7 +17,7 @@ public class PlacementPermutator {
     private int additionalTurns;
 
     public PlacementPermutator(Field startingField, ShapeType t1, ShapeType t2, int additionalTurns) {
-        this.startingField = startingField;
+        this.startingField = removeShapeBlocks(startingField);
         this.t1 = t1;
         this.t2 = t2;
         this.additionalTurns = additionalTurns;
@@ -63,7 +63,7 @@ public class PlacementPermutator {
         return placements;
     }
 
-    private Field getResultingField(Shape shape, Field field) {
+    private Field removeShapeBlocks(Field field) {
         Cell[][] grid = new Cell[field.getWidth()][field.getHeight()];
 
         for (int x = 0; x < field.getWidth(); x++) {
@@ -73,6 +73,18 @@ public class PlacementPermutator {
                     cell = new Cell(x, y, CellType.EMPTY);
                 }
                 grid[x][y] = new Cell(x, y, cell.getState());
+            }
+        }
+
+        return new Field((grid));
+    }
+
+    private Field getResultingField(Shape shape, Field field) {
+        Cell[][] grid = new Cell[field.getWidth()][field.getHeight()];
+
+        for (int x = 0; x < field.getWidth(); x++) {
+            for (int y = 0; y < field.getHeight(); y++) {
+                grid[x][y] = field.getCell(x, y);
             }
         }
 
