@@ -51,6 +51,29 @@ public class PathFinder {
         throw new NoPathAvailableException();
     }
 
+    public boolean pathExists() {
+        Set<Path> pathSet = new HashSet<>();
+        Path startPath = new Path(new Shape(end));
+        pathSet.add(startPath.applyMove(MoveType.DROP));
+        int clearHeight = field.getMaxHeight() - end.getSize();
+
+        while (!pathSet.isEmpty()) {
+            log.trace("Evaluating paths: %s", pathSet);
+            Set<Path> nextPathSets = new HashSet<>();
+            for (Path path : getNextPaths(pathSet)) {
+                if (path.shape.equals(start) || path.shape.getLocation().y <= clearHeight) {
+                    return true;
+                } else if (!visitedLocations.contains(path.shape) && path.isValid()) {
+                    nextPathSets.add(path);
+                    visitedLocations.add(path.shape);
+                }
+            }
+            pathSet = nextPathSets;
+        }
+
+        return false;
+    }
+
     private Set<Path> getNextPaths(Set<Path> lastPaths) {
         Set<Path> nextPaths = new HashSet<>();
 
@@ -111,7 +134,7 @@ public class PathFinder {
             for (Cell cell : cells) {
                 Point p = cell.getLocation();
                 Cell fieldCell = field.getCell(p);
-                if (fieldCell == null || (!fieldCell.isEmpty() && !fieldCell.isShape()) ) {
+                if (fieldCell == null || (!fieldCell.isEmpty() && (!fieldCell.isShape() || p.y != 0)) ) {
                     return false;
                 }
             }

@@ -54,7 +54,11 @@ public class PlacementPermutator {
                     }
 
                     if(field.isValidPosition(shape)) {
-                        placements.add(shape);
+                        Shape start = new Shape(shape.type, getStartingLocation(shape.type));
+                        PathFinder pathFinder = new PathFinder(start, shape, field);
+                        if(pathFinder.pathExists()) {
+                            placements.add(shape);
+                        }
                     }
                 }
             }
@@ -143,5 +147,14 @@ public class PlacementPermutator {
         }
 
         return completedLines;
+    }
+
+    private Point getStartingLocation(ShapeType type) {
+        switch (type) {
+            case O:
+                return new Point(4, -1);
+            default:
+                return new Point(3, -1);
+        }
     }
 }

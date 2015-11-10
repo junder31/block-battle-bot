@@ -120,4 +120,37 @@ class PathFinderSpec extends Specification {
         then:
         moves.any { it == MoveType.TURNLEFT || it == MoveType.TURNRIGHT }
     }
+
+    void "test L spin"() {
+        given:
+        Field field = new Field(10, 20,
+                "0,0,0,1,1,1,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,2,2,2,2,0,2,0;" +
+                        "0,0,0,2,2,0,0,0,2,2;" +
+                        "2,0,2,2,2,2,2,2,2,2;" +
+                        "2,2,2,0,2,2,2,2,2,2;" +
+                        "0,2,2,0,2,2,2,2,2,2;" +
+                        "2,2,2,2,2,2,0,2,2,2;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3")
+        Shape start = new Shape(ShapeType.L, new Point(3, -1))
+        Shape end = new Shape(ShapeType.L, new Point(5, 12))
+
+        when:
+        new PathFinder(start, end, field).findPath()
+
+        then:
+        thrown(NoPathAvailableException)
+    }
 }

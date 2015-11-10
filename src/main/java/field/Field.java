@@ -205,7 +205,7 @@ public class Field {
         return (SCORE_SEGMENT_SIZE * emptyScore) / 1000;
     }
 
-    private int getMaxHeight() {
+    public int getMaxHeight() {
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
                 if(!getCell(x, y).isEmpty()) {

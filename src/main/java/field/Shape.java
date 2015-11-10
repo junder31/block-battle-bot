@@ -211,6 +211,10 @@ public class Shape implements Comparable<Shape> {
         return blocks;
     }
 
+    public int getSize() {
+        return cells.length;
+    }
+
     public Point getLocation() {
         return this.location;
     }
