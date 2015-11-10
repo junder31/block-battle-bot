@@ -185,9 +185,9 @@ public class Field {
         int maxHeight = getMaxHeight();
         long score = height - maxHeight < 4 ? 0 : 1;
 
-        score = (SCORE_SEGMENT_SIZE * score) + calculateOpennessScorePart();
-        score = (SCORE_SEGMENT_SIZE * score) + (SCORE_SEGMENT_SIZE * (height - getMaxHeight())) / height;
-        score = (SCORE_SEGMENT_SIZE * score) + calculateEmptyRegionScorePart();
+        score = (SCORE_SEGMENT_SIZE * score) + calculateOpennessScorePart() - 1;
+        score = (SCORE_SEGMENT_SIZE * score) + ((SCORE_SEGMENT_SIZE * (height - getMaxHeight())) / height) - 1;
+        score = (SCORE_SEGMENT_SIZE * score) + calculateEmptyRegionScorePart() - 1;
 
         return score;
     }

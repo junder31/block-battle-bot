@@ -136,7 +136,8 @@ public class PlacementPermutator {
             boolean isComplete = true;
 
             for (int x = 0; x < field.getWidth(); x++) {
-                if (field.getCell(x, y).isEmpty()) {
+                Cell c = field.getCell(x, y);
+                if (c.isEmpty() || c.isSolid()) {
                     isComplete = false;
                     break;
                 }

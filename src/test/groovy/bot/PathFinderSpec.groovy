@@ -153,4 +153,37 @@ class PathFinderSpec extends Specification {
         then:
         thrown(NoPathAvailableException)
     }
+
+    void "test finding path for I with high columns right side"() {
+        given:
+        Field field = new Field(10, 20,
+                "0,0,0,1,1,1,1,0,0,0;" +
+                        "0,0,0,0,0,0,0,2,0,0;" +
+                        "0,0,0,0,0,0,2,2,0,0;" +
+                        "0,0,0,0,2,0,2,2,0,0;" +
+                        "0,0,2,2,2,0,2,2,2,0;" +
+                        "0,0,2,2,2,0,2,2,2,0;" +
+                        "0,0,2,2,0,0,2,2,2,0;" +
+                        "0,0,2,0,0,0,2,2,2,0;" +
+                        "2,0,2,2,2,0,2,2,2,0;" +
+                        "2,2,2,2,2,0,2,2,2,0;" +
+                        "2,2,2,2,2,0,2,2,2,0;" +
+                        "2,2,2,2,2,0,2,2,2,0;" +
+                        "0,2,2,2,2,0,2,2,2,0;" +
+                        "0,2,2,2,2,0,2,2,2,0;" +
+                        "0,2,2,2,2,2,2,2,2,0;" +
+                        "0,2,2,2,2,2,2,2,2,0;" +
+                        "0,2,2,2,2,2,2,2,2,2;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;")
+        Shape start = new Shape(ShapeType.I, new Point(3, -1));
+        Shape end = new Shape(ShapeType.I, new Point(7, 12)).turnRight();
+
+        when:
+        def moves = new PathFinder(start, end, field).findPath();
+
+        then:
+        moves.contains(MoveType.DOWN)
+    }
 }

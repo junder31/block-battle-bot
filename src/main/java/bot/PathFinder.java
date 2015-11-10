@@ -134,8 +134,10 @@ public class PathFinder {
             for (Cell cell : cells) {
                 Point p = cell.getLocation();
                 Cell fieldCell = field.getCell(p);
-                if (fieldCell == null || (!fieldCell.isEmpty() && (!fieldCell.isShape() || p.y != 0)) ) {
-                    return false;
+                if ((fieldCell == null || (!fieldCell.isEmpty() && (!fieldCell.isShape() || p.y != 0)))) {
+                    if( !(p.y == -1 && p.x >= 0 && p.x < field.getWidth())) {
+                        return false;
+                    }
                 }
             }
 
