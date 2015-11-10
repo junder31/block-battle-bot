@@ -55,7 +55,7 @@ public class PathFinder {
         Set<Path> pathSet = new HashSet<>();
         Path startPath = new Path(new Shape(end));
         pathSet.add(startPath.applyMove(MoveType.DROP));
-        int clearHeight = field.getMaxHeight() - end.getSize();
+        int clearHeight = field.getHeight() - (field.getMaxHeight() + end.getSize());
 
         while (!pathSet.isEmpty()) {
             log.trace("Evaluating paths: %s", pathSet);
