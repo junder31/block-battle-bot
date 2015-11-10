@@ -1,20 +1,17 @@
 package bot
 
 import field.Field
-import field.FieldUtil
 import field.Point
 import field.Shape
 import field.ShapeType
-import moves.MoveType
-import player.Player
+import field.FieldUtil;
 import spock.lang.Specification
 
 /**
- * Created by johnunderwood on 11/8/15.
+ * Created by johnunderwood on 11/9/15.
  */
-class BotStarterSpec extends Specification {
-//    public static BotStarter botStarter = new BotStarter();
-//
+class PlacementTreeSpec extends Specification {
+
 //    void "test finding possible locations"() {
 //        given:
 //        BotState state = new BotState();
@@ -239,7 +236,7 @@ class BotStarterSpec extends Specification {
 //        then:
 //        new Shape(ShapeType.J, new Point(5, 10)) == placements.first()
 //    }
-//
+
 //    void "test bad placement from round 11 5640ff301c687b42e84f4c00"() {
 //        given:
 //        Field field = new Field(10, 20,
@@ -263,21 +260,48 @@ class BotStarterSpec extends Specification {
 //                        "0,0,0,0,0,2,2,2,2,2;" +
 //                        "0,0,2,2,2,2,2,2,2,2;" +
 //                        "2,2,0,2,2,2,2,2,2,2")
-//        BotState state = new BotState();
-//        Player player = new Player("p")
-//        player.field = field
-//        state.myBot = player
-//        state.currentShape = ShapeType.Z
-//        state.shapeLocation = new Point(3, -1)
 //
 //        when:
-//        def placements = botStarter.getPossiblePlacements(state)
-//        Collections.sort(placements, new FieldCompatator(state.getMyField()));
+//        def placementTrees = new PlacementPermutator(field, ShapeType.Z, ShapeType.I, 0).getPossibleResultingFields()
+//        Collections.sort(placementTrees);
 //
 //        then:
-//        new Shape(ShapeType.Z, new Point(4, 15)).turnLeft() == placements.first()
+//        println(placementTrees.first().field)
+//        new Shape(ShapeType.Z, new Point(4, 15)).turnLeft() == placementTrees.first().shape
 //    }
-//
 
+    void "test sorting PlacementTrees"() {
+        given:
+        Field field = new Field(10, 20,
+                "0,0,0,1,1,1,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "2,0,0,0,0,0,0,0,0,0;" +
+                        "2,2,0,0,0,0,0,0,0,2;" +
+                        "2,2,2,0,0,0,0,0,0,2;" +
+                        "2,2,2,0,0,0,0,0,2,2;" +
+                        "2,2,2,0,0,0,0,0,2,2;" +
+                        "2,2,2,2,0,0,0,0,2,2;" +
+                        "2,2,2,2,2,0,0,0,2,2;" +
+                        "2,2,2,2,0,2,2,2,2,2;" +
+                        "2,2,2,2,2,0,0,2,2,2;" +
+                        "2,0,2,2,2,2,2,2,2,2;" +
+                        "2,2,2,2,0,2,0,2,2,2;" +
+                        "2,2,2,2,2,2,2,2,0,2;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3")
+        Shape s1 = new Shape(ShapeType.J, new Point(-1, 2)).turnRight();
+        Field f1 = FieldUtil.getResultingField(s1, field);
+        Shape s2 = new Shape(ShapeType.J, new Point(5, 10))
+        Field f2 = FieldUtil.getResultingField(s2, field)
 
+        when:
+        def placementTrees = [new PlacementTree(s1, f1), new PlacementTree(s2, f2)]
+
+        then:
+        s1 == placementTrees.sort().first().shape
+    }
 }

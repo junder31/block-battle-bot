@@ -41,7 +41,7 @@ public class PlacementPermutator {
         return placementTrees;
     }
 
-    public Set<Shape> getPossiblePlacements(ShapeType shapeType, Field field) {
+    private Set<Shape> getPossiblePlacements(ShapeType shapeType, Field field) {
         Set<Shape> placements = new HashSet<>();
 
         for (int x = -2; x < field.getWidth(); x++) {

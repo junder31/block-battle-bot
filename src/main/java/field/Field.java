@@ -198,7 +198,8 @@ public class Field {
             perimeter += getPerimeter(region);
         }
 
-        long emptyScore = (900 * perimeter) / maxPerimeter + (100 * emptyRegions.size()) / maxRegions;
+        long emptyScore = (900 * (maxPerimeter - perimeter)) / maxPerimeter +
+                (100 * (maxRegions - emptyRegions.size())) / maxRegions;
         return (SCORE_SEGMENT_SIZE * emptyScore) / 1000;
     }
 

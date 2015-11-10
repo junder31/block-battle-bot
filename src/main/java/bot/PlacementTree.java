@@ -70,9 +70,9 @@ public class PlacementTree implements Comparable<PlacementTree> {
         long otherScore = o.getScore();
 
         if(myScore > otherScore) {
-            return -1;
-        } else if(myScore < otherScore) {
             return 1;
+        } else if(myScore < otherScore) {
+            return -1;
         } else {
             return 0;
         }
