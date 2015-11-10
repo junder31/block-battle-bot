@@ -1,6 +1,8 @@
 package bot;
 
+import field.Cell;
 import field.Field;
+import field.Point;
 import field.Shape;
 import log.Logger;
 import moves.MoveType;
@@ -104,7 +106,17 @@ public class PathFinder {
         }
 
         public boolean isValid() {
-            return field.areShapeCellsEmpty(shape);
+            Cell[] cells = shape.getBlocks();
+
+            for (Cell cell : cells) {
+                Point p = cell.getLocation();
+                Cell fieldCell = field.getCell(p);
+                if (fieldCell == null || (!fieldCell.isEmpty() && !fieldCell.isShape()) ) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         @Override
@@ -116,7 +128,6 @@ public class PathFinder {
 
             if (!moves.equals(path.moves)) return false;
             return shape.equals(path.shape);
-
         }
 
         @Override

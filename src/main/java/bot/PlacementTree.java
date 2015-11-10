@@ -53,12 +53,15 @@ public class PlacementTree implements Comparable<PlacementTree> {
     }
 
     public long getScore() {
-        if(hasChildren()) {
+        if (hasChildren()) {
             long score = 0;
-            for(PlacementTree child : children) {
-                score += child.getScore();
+            for (PlacementTree child : children) {
+                long cScore = child.getScore();
+                if (cScore > score) {
+                    score = cScore;
+                }
             }
-            return score / children.size();
+            return score;
         } else {
             return field.getScore();
         }
@@ -69,9 +72,9 @@ public class PlacementTree implements Comparable<PlacementTree> {
         long myScore = getScore();
         long otherScore = o.getScore();
 
-        if(myScore > otherScore) {
+        if (myScore > otherScore) {
             return -1;
-        } else if(myScore < otherScore) {
+        } else if (myScore < otherScore) {
             return 1;
         } else {
             return 0;

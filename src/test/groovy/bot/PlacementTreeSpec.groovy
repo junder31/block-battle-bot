@@ -304,4 +304,37 @@ class PlacementTreeSpec extends Specification {
         then:
         s2 == placementTrees.sort().first().shape
     }
+
+    void "test I piece takes tetris when avaliable"() {
+        given:
+        Field field = new Field(10, 20,
+                "0,0,0,1,1,1,1,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,2,2,2,0,0,0,0;" +
+                        "0,0,2,2,2,2,2,0,0,0;" +
+                        "0,2,2,2,2,2,2,0,0,0;" +
+                        "0,2,2,2,2,2,2,0,0,0;" +
+                        "0,2,2,2,2,2,2,0,0,0;" +
+                        "0,2,2,2,2,2,2,0,0,0;" +
+                        "0,2,2,2,2,2,2,0,0,0;" +
+                        "0,2,2,2,2,2,2,0,0,0;" +
+                        "0,2,2,2,2,2,2,0,0,0;" +
+                        "0,2,2,2,2,2,2,2,0,0;" +
+                        "0,2,2,2,2,2,2,2,0,0;" +
+                        "0,2,2,2,2,2,2,2,2,0;" +
+                        "2,2,2,2,2,2,2,2,2,0;" +
+                        "2,2,2,2,2,2,2,2,2,0;" +
+                        "2,2,2,2,2,2,2,2,2,0;" +
+                        "2,2,2,2,2,2,2,2,2,0;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3")
+
+        when:
+        def placementTrees = new PlacementPermutator(field, ShapeType.I, ShapeType.T, 0).getPossibleResultingFields()
+        Collections.sort(placementTrees);
+
+        then:
+        println(placementTrees.first().field)
+        new Shape(ShapeType.I, new Point(7, 14)).turnRight().getBlocks() == placementTrees.first().shape.getBlocks()
+    }
 }

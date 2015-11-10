@@ -130,7 +130,7 @@ public class Field {
 
     public boolean isLocationEmpty(Point p) {
         Cell fieldCell = getCell(p.x, p.y);
-        return fieldCell != null && (fieldCell.isEmpty() || fieldCell.isShape());
+        return fieldCell != null && fieldCell.isEmpty();
     }
 
     public Set<Set<Cell>> getEmptyRegions() {
@@ -183,7 +183,9 @@ public class Field {
 
     private long calculateScore() {
         long score = calculateOpennessScorePart();
+        score = (SCORE_SEGMENT_SIZE * score) + (SCORE_SEGMENT_SIZE * (height - getMaxHeight())) / height;
         score = (SCORE_SEGMENT_SIZE * score) + calculateEmptyRegionScorePart();
+
 
         return score;
     }
@@ -201,6 +203,18 @@ public class Field {
         long emptyScore = (900 * (maxPerimeter - perimeter)) / maxPerimeter +
                 (100 * (maxRegions - emptyRegions.size())) / maxRegions;
         return (SCORE_SEGMENT_SIZE * emptyScore) / 1000;
+    }
+
+    private int getMaxHeight() {
+        for(int y = 0; y < height; y++) {
+            for(int x = 0; x < width; x++) {
+                if(!getCell(x, y).isEmpty()) {
+                    return height - y;
+                }
+            }
+        }
+
+        return 0;
     }
 
     private int getPerimeter(Set<Cell> cells) {
@@ -265,10 +279,10 @@ public class Field {
     }
 
     private int countOverhang(Cell cell) {
-        int count = 0;
+        int count = 1;
 
-        while (cell.getY() - 1 >= 0 && !getCell(cell.getX(), cell.getY() - 1).isEmpty()) {
-            cell = getCell(cell.getX(), cell.getY() - 1);
+        while (cell.getY() + 1 < height && getCell(cell.getX(), cell.getY() + 1).isEmpty()) {
+            cell = getCell(cell.getX(), cell.getY() + 1);
             count++;
         }
 
