@@ -46,7 +46,8 @@ public class PlacementPermutator {
 
         for (int x = -2; x < field.getWidth(); x++) {
             for (int y = field.getHeight() - 1; y >= -2; y--) {
-                for (int i = 0; i < 4; i++) {
+                int rotations = shapeType == ShapeType.L || shapeType == ShapeType.J || shapeType == ShapeType.T ? 4 : 2;
+                for (int i = 0; i < rotations; i++) {
                     Shape shape = new Shape(shapeType, new Point(x, y));
 
                     for(int j = i; j > 0; j--) {
