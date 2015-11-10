@@ -182,18 +182,12 @@ public class Field {
     }
 
     private long calculateScore() {
-        long score;
         int maxHeight = getMaxHeight();
+        long score = height - maxHeight < 4 ? 0 : 1;
 
-        if(height - maxHeight < 4) {
-            score = (SCORE_SEGMENT_SIZE * (height - getMaxHeight())) / height;
-            score = (SCORE_SEGMENT_SIZE * score) + calculateOpennessScorePart();
-            score = (SCORE_SEGMENT_SIZE * score) + calculateEmptyRegionScorePart();
-        } else {
-            score = calculateOpennessScorePart();
-            score = (SCORE_SEGMENT_SIZE * score) + (SCORE_SEGMENT_SIZE * (height - getMaxHeight())) / height;
-            score = (SCORE_SEGMENT_SIZE * score) + calculateEmptyRegionScorePart();
-        }
+        score = (SCORE_SEGMENT_SIZE * score) + calculateOpennessScorePart();
+        score = (SCORE_SEGMENT_SIZE * score) + (SCORE_SEGMENT_SIZE * (height - getMaxHeight())) / height;
+        score = (SCORE_SEGMENT_SIZE * score) + calculateEmptyRegionScorePart();
 
         return score;
     }
