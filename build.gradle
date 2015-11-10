@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'groovy'
 
 sourceCompatibility = 1.8
-version = 'v38'
+version = 'v39'
 
 repositories {
     mavenCentral()

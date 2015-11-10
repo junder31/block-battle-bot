@@ -19,11 +19,12 @@ package field;
 
 import log.Logger;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Field class
- * <p/>
+ * <p>
  * Represents the playing field for one player.
  * Has some basic methods already implemented.
  *
@@ -31,11 +32,13 @@ import java.util.*;
  */
 
 public class Field {
+    private static final long SCORE_SEGMENT_SIZE = 10000;
     private static Logger log = new Logger(Field.class.getSimpleName());
 
     private final int width;
     private final int height;
     private Cell[][] grid;
+    private long score = -1;
 
     public Field(int width, int height, String fieldString) {
         this.width = width;
@@ -136,10 +139,10 @@ public class Field {
         Set<CellType> empty = new HashSet<>();
         empty.add(CellType.EMPTY);
 
-        for(int x = 0; x < width; x++) {
-            for(int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
                 Cell cell = getCell(x, y);
-                if(!usedCells.contains(cell) && cell.isEmpty()) {
+                if (!usedCells.contains(cell) && cell.isEmpty()) {
                     Set<Cell> region = getConnectedCells(cell, empty);
                     emptyRegions.add(region);
                     usedCells.addAll(region);
@@ -160,8 +163,8 @@ public class Field {
         return connected;
     }
 
-    public void getConnectedCellsHelper(Cell cell , Set<CellType> types, Set<Cell> connected) {
-        if(cell != null && !connected.contains(cell) && types.contains(cell.getState())) {
+    public void getConnectedCellsHelper(Cell cell, Set<CellType> types, Set<Cell> connected) {
+        if (cell != null && !connected.contains(cell) && types.contains(cell.getState())) {
             connected.add(cell);
 
             getConnectedCellsHelper(getLeftNeighbor(cell), types, connected);
@@ -169,6 +172,106 @@ public class Field {
             getConnectedCellsHelper(getUpNeighbor(cell), types, connected);
             getConnectedCellsHelper(getDownNeighbor(cell), types, connected);
         }
+    }
+
+    public long getScore() {
+        if (score < 0) {
+            score = calculateScore();
+        }
+        return score;
+    }
+
+    private long calculateScore() {
+        long score = calculateOpennessScorePart();
+        score = (SCORE_SEGMENT_SIZE * score) + calculateEmptyRegionScorePart();
+
+        return score;
+    }
+
+    private long calculateEmptyRegionScorePart() {
+        Set<Set<Cell>> emptyRegions = getEmptyRegions();
+        int maxPerimeter = height * width * 4;
+        int maxRegions = height * width;
+
+        int perimeter = 0;
+        for (Set<Cell> region : emptyRegions) {
+            perimeter += getPerimeter(region);
+        }
+
+        long emptyScore = (900 * perimeter) / maxPerimeter + (100 * emptyRegions.size()) / maxRegions;
+        return (SCORE_SEGMENT_SIZE * emptyScore) / 1000;
+    }
+
+    private int getPerimeter(Set<Cell> cells) {
+        int perimeter = 0;
+
+        for (Cell cell : cells) {
+            perimeter += getNeighborCount(cell);
+        }
+
+        return perimeter;
+    }
+
+    private int getNeighborCount(Cell cell) {
+        int neighbors = 0;
+
+        Cell l = getLeftNeighbor(cell);
+        if (l == null || !l.isEmpty()) {
+            neighbors++;
+        }
+        Cell r = getRightNeighbor(cell);
+        if (r == null || !r.isEmpty()) {
+            neighbors++;
+        }
+        Cell u = getUpNeighbor(cell);
+        if (u == null || !u.isEmpty()) {
+            neighbors++;
+        }
+        Cell d = getDownNeighbor(cell);
+        if (d == null || !d.isEmpty()) {
+            neighbors++;
+        }
+
+        return neighbors;
+    }
+
+    private long calculateOpennessScorePart() {
+        int overhangMultiplier = 10;
+        int sideMultiplier = 1;
+        long opennessMax = (height - 1) * width * overhangMultiplier;
+        long openness = opennessMax;
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Cell cell = getCell(x, y);
+                if (cell.isEmpty()) {
+                    if (y - 1 >= 0 && !getCell(x, y - 1).isEmpty()) {
+                        openness -= overhangMultiplier * countOverhang(cell);
+                    }
+
+                    if (x + 1 < width && !getCell(x + 1, y).isEmpty()) {
+                        openness -= sideMultiplier;
+                    }
+
+                    if (x - 1 >= 0 && !getCell(x - 1, y).isEmpty()) {
+                        openness -= sideMultiplier;
+                    }
+                }
+            }
+        }
+
+        return (SCORE_SEGMENT_SIZE * openness) / opennessMax;
+    }
+
+    private int countOverhang(Cell cell) {
+        int count = 0;
+
+        while (cell.getY() - 1 >= 0 && !getCell(cell.getX(), cell.getY() - 1).isEmpty()) {
+            cell = getCell(cell.getX(), cell.getY() - 1);
+            count++;
+        }
+
+        return count;
     }
 
     public Cell getLeftNeighbor(Cell cell) {
@@ -193,5 +296,34 @@ public class Field {
 
     public int getWidth() {
         return this.width;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                sb.append(getCell(x, y).getState().ordinal());
+                sb.append(' ');
+            }
+            sb.append('\n');
+        }
+
+        return sb.toString();
+    }
+
+    public String printNeighborCounts() {
+        StringBuilder sb = new StringBuilder();
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                sb.append(getNeighborCount(getCell(x, y)));
+                sb.append(' ');
+            }
+            sb.append('\n');
+        }
+
+        return sb.toString();
     }
 }

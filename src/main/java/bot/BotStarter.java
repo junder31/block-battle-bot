@@ -16,13 +16,14 @@
 //    file that was distributed with this source code.
 
 package bot;
-import field.Field;
+
 import field.Point;
 import field.Shape;
 import field.ShapeType;
 import log.Logger;
 import moves.MoveType;
-import java.util.*;
+
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,6 +37,7 @@ import java.util.List;
 
 public class BotStarter {
     private static Logger log = new Logger(BotStarter.class.getSimpleName());
+    private int roundNum = 1;
 
     public BotStarter() {
     }
@@ -48,32 +50,34 @@ public class BotStarter {
      * @return : a list of moves to execute
      */
     public List<MoveType> getMoves(BotState state, long timeout) {
+        log.info("Starting Round %d", roundNum++);
 
+        List<PlacementTree> possiblePlacements = new PlacementPermutator(state.getMyField(),
+                state.getCurrentShape(),
+                state.getNextShape(),
+                0).getPossibleResultingFields();
 
-        List<Shape> possiblePlacements = getPossiblePlacements(state);
-        log.trace("Possible placements: %s", possiblePlacements);
-
-        if(possiblePlacements.size() == 0) {
+        if (possiblePlacements.size() == 0) {
             throw new RuntimeException("Failed to find any possible placements for " + getCurrentShape(state) + ".");
         }
 
-        Collections.sort(possiblePlacements, new PlacementComparator(state.getMyField()));
+        Collections.sort(possiblePlacements);
 
         List<MoveType> moves = null;
 
-        for(int i = 0; i < possiblePlacements.size(); i++) {
-            Shape placement = possiblePlacements.get(i);
+        for (int i = 0; i < possiblePlacements.size(); i++) {
+            Shape placement = possiblePlacements.get(i).shape;
             try {
                 log.debug("Attempting to find path from %s to %s.", getCurrentShape(state), placement);
                 moves = new PathFinder(getCurrentShape(state), placement, state.getMyField()).findPath();
-                log.info("Moving shape to %s with moves %s.", placement, moves);
+                log.info("Moving shape to %s", placement);
                 break;
             } catch (NoPathAvailableException ex) {
                 log.warn("Could not find a path from %s to %s.", getCurrentShape(state), placement);
             }
         }
 
-        if(moves == null) {
+        if (moves == null) {
             log.error("Failed to find any series of moves.");
             moves.add(MoveType.DROP);
         }
@@ -81,28 +85,6 @@ public class BotStarter {
         return moves;
     }
 
-    public ArrayList<Shape> getPossiblePlacements(BotState state) {
-        Field field = state.getMyField();
-        ArrayList<Shape> placements = new ArrayList<>();
-
-        for (int x = -2; x < field.getWidth(); x++) {
-            for (int y = field.getHeight() - 1; y >= -2; y--) {
-                for (int i = 0; i < 4; i++) {
-                    Shape shape = new Shape(state.getCurrentShape(), new Point(x, y));
-
-                    for(int j = i; j > 0; j--) {
-                        shape = shape.turnRight();
-                    }
-
-                    if(field.isValidPosition(shape)) {
-                        placements.add(shape);
-                    }
-                }
-            }
-        }
-
-        return placements;
-    }
 
     public Shape getCurrentShape(BotState state) {
         ShapeType type = state.getCurrentShape();
