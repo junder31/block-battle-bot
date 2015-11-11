@@ -19,10 +19,7 @@ package field;
 
 import log.Logger;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Field class
@@ -260,6 +257,8 @@ public class Field {
         long opennessMax = (height - 1) * width * 10;
         long openness = opennessMax;
 
+        List<Cell> sideCells = new ArrayList<>();
+
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 Cell cell = getCell(x, y);
@@ -270,10 +269,36 @@ public class Field {
 
                     if ( (x + 1 == width || !getCell(x + 1, y).isEmpty()) &&
                             (x - 1 < 0 || !getCell(x - 1, y).isEmpty())) {
-                        openness -= sideMultiplier;
+                        sideCells.add(cell);
                     }
-
                 }
+            }
+        }
+
+        Collections.sort(sideCells, new Comparator<Cell>() {
+            @Override
+            public int compare(Cell o1, Cell o2) {
+                int c = o1.getX() - o2.getX();
+                if(c == 0) {
+                    c = o1.getY() - o2.getY();
+                }
+
+                return c;
+            }
+        });
+
+        int columnHeight = 0;
+        int lastY = height;
+        for(int i = 0; i < sideCells.size(); i++) {
+            if(sideCells.get(i).getY() == lastY + 1) {
+                columnHeight++;
+                lastY++;
+            } else {
+                if(columnHeight >= 3) {
+                    openness -= (columnHeight - 3) * sideMultiplier;
+                }
+                lastY = sideCells.get(i).getY();
+                columnHeight = 1;
             }
         }
 

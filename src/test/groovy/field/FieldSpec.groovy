@@ -131,38 +131,4 @@ class FieldSpec extends Specification {
         then:
         f2.getScore() > f1.getScore()
     }
-
-    void "test limiting overhang is prioritized"() {
-        given:
-        Field field = new Field(10, 20,
-                "0,0,0,1,1,1,1,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,2,0;" +
-                        "0,0,0,2,2,0,0,0,2,2;" +
-                        "2,0,2,2,2,2,2,2,2,2;" +
-                        "2,2,2,0,2,2,2,2,2,2;" +
-                        "0,2,2,0,2,2,2,2,2,2;" +
-                        "3,3,3,3,3,3,3,3,3,3;" +
-                        "3,3,3,3,3,3,3,3,3,3")
-
-        when:
-        Field f1 = field.getResultingField(new Shape(ShapeType.I, new Point(7, 10)).turnRight())
-                .getResultingField(new Shape(ShapeType.L, new Point(5, 13)));
-        Field f2 = field.getResultingField(new Shape(ShapeType.I, new Point(-1, 12)).turnRight())
-                .getResultingField(new Shape(ShapeType.L, new Point(5, 14)));
-
-        then:
-        f1.getScore() > f2.getScore()
-    }
 }

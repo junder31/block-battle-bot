@@ -237,39 +237,6 @@ class PlacementTreeSpec extends Specification {
 //        new Shape(ShapeType.J, new Point(5, 10)) == placements.first()
 //    }
 
-    void "test bad placement from round 11 5640ff301c687b42e84f4c00"() {
-        given:
-        Field field = new Field(10, 20,
-                "0,0,0,0,1,1,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,2,2,2;" +
-                        "0,0,0,0,0,0,0,2,2,2;" +
-                        "0,0,0,0,0,2,2,2,2,2;" +
-                        "0,0,2,2,2,2,2,2,2,2;" +
-                        "2,2,0,2,2,2,2,2,2,2")
-
-        when:
-        def placementTrees = new PlacementPermutator(field, ShapeType.Z, ShapeType.I, 0).getPossibleResultingFields()
-        Collections.sort(placementTrees);
-
-        then:
-        println(placementTrees.first().field)
-        new Shape(ShapeType.Z, new Point(4, 15)).turnLeft().getBlocks() == placementTrees.first().shape.getBlocks()
-    }
-
     void "test sorting PlacementTrees"() {
         given:
         Field field = new Field(10, 20,
