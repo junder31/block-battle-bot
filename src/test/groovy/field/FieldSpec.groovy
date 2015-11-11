@@ -132,38 +132,6 @@ class FieldSpec extends Specification {
         f2.getScore() > f1.getScore()
     }
 
-    void "test not covering overhang is being applied correctly"() {
-        given:
-        Field field = new Field(10, 20,
-                "0,0,0,0,1,1,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,2,0,0,2,2,2,2,0;" +
-                        "0,2,2,2,2,2,0,2,2,2;" +
-                        "0,2,2,2,2,2,2,2,2,2;" +
-                        "3,3,3,3,3,3,3,3,3,3;" +
-                        "3,3,3,3,3,3,3,3,3,3;" +
-                        "3,3,3,3,3,3,3,3,3,3").getResultingField(new Shape(ShapeType.O, new Point(3, 13)));
-
-        when:
-        Field f1 = field.getResultingField(new Shape(ShapeType.O, new Point(7, 12)));
-        Field f2 = field.getResultingField(new Shape(ShapeType.O, new Point(5, 12)));
-
-        then:
-        f1.getScore() > f2.getScore()
-    }
-
     void "test limiting overhang is prioritized"() {
         given:
         Field field = new Field(10, 20,

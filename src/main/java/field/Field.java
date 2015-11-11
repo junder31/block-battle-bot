@@ -283,7 +283,7 @@ public class Field {
     private int countOverhang(Cell cell) {
         int count = 0;
 
-        while (cell.getY() - 1 >= 0 && !getCell(cell.getX(), cell.getY() - 1).isEmpty()) {
+        while (cell.getY() - 1 >= 0 && !getCell(cell.getX(), cell.getY() - 1).isEmpty() && count < 2) {
             cell = getCell(cell.getX(), cell.getY() - 1);
             count++;
         }
