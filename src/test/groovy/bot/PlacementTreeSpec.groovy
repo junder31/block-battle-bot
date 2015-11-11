@@ -294,9 +294,9 @@ class PlacementTreeSpec extends Specification {
                         "3,3,3,3,3,3,3,3,3,3;" +
                         "3,3,3,3,3,3,3,3,3,3")
         Shape s1 = new Shape(ShapeType.J, new Point(-1, 2)).turnRight();
-        Field f1 = FieldUtil.getResultingField(s1, field);
+        Field f1 = field.getResultingField(s1);
         Shape s2 = new Shape(ShapeType.J, new Point(5, 10))
-        Field f2 = FieldUtil.getResultingField(s2, field)
+        Field f2 = field.getResultingField(s2)
 
         when:
         def placementTrees = [new PlacementTree(s1, f1), new PlacementTree(s2, f2)]
@@ -338,39 +338,6 @@ class PlacementTreeSpec extends Specification {
         new Shape(ShapeType.I, new Point(7, 14)).turnRight().getBlocks() == placementTrees.first().shape.getBlocks()
     }
 
-    void "test I choose not to block to squares"() {
-        given:
-        Field field = new Field(10, 20,
-                "0,0,0,1,1,1,1,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,2,0;" +
-                        "0,0,0,2,2,0,0,0,2,2;" +
-                        "2,0,2,2,2,2,2,2,2,2;" +
-                        "2,2,2,0,2,2,2,2,2,2;" +
-                        "0,2,2,0,2,2,2,2,2,2;" +
-                        "3,3,3,3,3,3,3,3,3,3;" +
-                        "3,3,3,3,3,3,3,3,3,3")
-
-        when:
-        def placementTrees = new PlacementPermutator(field, ShapeType.I, ShapeType.L, 0).getPossibleResultingFields()
-        Collections.sort(placementTrees);
-
-        then:
-        println(placementTrees.first().field)
-        new Shape(ShapeType.I, new Point(7, 10)).turnRight().getBlocks() == placementTrees.first().shape.getBlocks()
-    }
-
     void "test placing I when columns exist and row count high"() {
         given:
         Field field = new Field(10, 20,
@@ -402,5 +369,38 @@ class PlacementTreeSpec extends Specification {
         then:
         println(placementTrees.first().field)
         new Shape(ShapeType.I, new Point(3, 10)).turnRight().getBlocks() == placementTrees.first().shape.getBlocks()
+    }
+
+    void "test not placing on top of empty cell"() {
+        given:
+        Field field = new Field(10, 20,
+                "0,0,0,0,1,1,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,2,0,0,2,2,2,2,0;" +
+                        "0,2,2,2,2,2,0,2,2,2;" +
+                        "0,2,2,2,2,2,2,2,2,2;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3")
+
+        when:
+        def placementTrees = new PlacementPermutator(field, ShapeType.O, ShapeType.O, 0).getPossibleResultingFields()
+        Collections.sort(placementTrees);
+
+        then:
+        println(placementTrees.first().field)
+        new Shape(ShapeType.O, new Point(3, 13)).getBlocks() == placementTrees.first().shape.getBlocks()
     }
 }

@@ -19,7 +19,9 @@ package field;
 
 import log.Logger;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -253,9 +255,9 @@ public class Field {
     }
 
     private long calculateOpennessScorePart() {
-        int overhangMultiplier = 10;
-        int sideMultiplier = 1;
-        long opennessMax = (height - 1) * width * overhangMultiplier;
+        int overhangMultiplier = 7;
+        int sideMultiplier = 6;
+        long opennessMax = (height - 1) * width * 10;
         long openness = opennessMax;
 
         for (int y = 0; y < height; y++) {
@@ -263,16 +265,14 @@ public class Field {
                 Cell cell = getCell(x, y);
                 if (cell.isEmpty()) {
                     if (y - 1 >= 0 && !getCell(x, y - 1).isEmpty()) {
-                        openness -= overhangMultiplier * countOverhang(cell);
+                        openness -= overhangMultiplier * countEmptyBelow(cell)  * countOverhang(cell);
                     }
 
-                    if (x + 1 < width && !getCell(x + 1, y).isEmpty()) {
+                    if ( (x + 1 == width || !getCell(x + 1, y).isEmpty()) &&
+                            (x - 1 < 0 || !getCell(x - 1, y).isEmpty())) {
                         openness -= sideMultiplier;
                     }
 
-                    if (x - 1 >= 0 && !getCell(x - 1, y).isEmpty()) {
-                        openness -= sideMultiplier;
-                    }
                 }
             }
         }
@@ -281,6 +281,17 @@ public class Field {
     }
 
     private int countOverhang(Cell cell) {
+        int count = 0;
+
+        while (cell.getY() - 1 >= 0 && !getCell(cell.getX(), cell.getY() - 1).isEmpty()) {
+            cell = getCell(cell.getX(), cell.getY() - 1);
+            count++;
+        }
+
+        return count;
+    }
+
+    private int countEmptyBelow(Cell cell) {
         int count = 1;
 
         while (cell.getY() + 1 < height && getCell(cell.getX(), cell.getY() + 1).isEmpty()) {
@@ -342,5 +353,77 @@ public class Field {
         }
 
         return sb.toString();
+    }
+
+    public Field getResultingField(Shape shape) {
+        Cell[][] grid = new Cell[width][height];
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                grid[x][y] = getCell(x, y);
+            }
+        }
+
+        int y = 0;
+        for(int x = 3; x <= 6; x++) {
+            grid[x][y] = new Cell(x, y, CellType.EMPTY);
+        }
+
+        for (Cell cell : shape.getBlocks()) {
+            grid[cell.getLocation().x][cell.getLocation().y] = cell;
+        }
+
+        return removeCompletedLines(new Field(grid));
+    }
+
+    private Field removeCompletedLines(Field field) {
+        List<Integer> completedLines = getCompletedLines(field);
+
+        if (completedLines.isEmpty()) {
+            return field;
+        } else {
+            Cell[][] grid = new Cell[field.getWidth()][field.getHeight()];
+            int i = 0;
+            int y;
+            for (y = field.getHeight() - 1; y >= 0; y--) {
+                if (i < completedLines.size() && y == completedLines.get(i)) {
+                    i++;
+                } else {
+                    for (int x = 0; x < field.getWidth(); x++) {
+                        grid[x][y + i] = new Cell(x, y + i, field.getCell(x, y).getState());
+                    }
+                }
+            }
+
+            for (y = 0; y < i; y++) {
+                for (int x = 0; x < field.getWidth(); x++) {
+                    grid[x][y] = new Cell(x, y, CellType.EMPTY);
+                }
+            }
+
+            return new Field(grid);
+        }
+    }
+
+    private List<Integer> getCompletedLines(Field field) {
+        List<Integer> completedLines = new ArrayList<>();
+
+        for (int y = field.getHeight() - 1; y >= 0; y--) {
+            boolean isComplete = true;
+
+            for (int x = 0; x < field.getWidth(); x++) {
+                Cell c = field.getCell(x, y);
+                if (c.isEmpty() || c.isSolid()) {
+                    isComplete = false;
+                    break;
+                }
+            }
+
+            if (isComplete) {
+                completedLines.add(y);
+            }
+        }
+
+        return completedLines;
     }
 }

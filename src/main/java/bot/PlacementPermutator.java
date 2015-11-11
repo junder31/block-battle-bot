@@ -27,14 +27,14 @@ public class PlacementPermutator {
         List<PlacementTree> placementTrees = new ArrayList<>();
 
         Set<Shape> t1Placements = getPossiblePlacements(t1, startingField);
-        for(Shape shape : t1Placements) {
-            placementTrees.add(new PlacementTree(shape, getResultingField(shape, startingField)));
+        for (Shape shape : t1Placements) {
+            placementTrees.add(new PlacementTree(shape, startingField.getResultingField(shape)));
         }
 
-        for(PlacementTree pt : placementTrees) {
+        for (PlacementTree pt : placementTrees) {
             Set<Shape> t2Placements = getPossiblePlacements(t2, pt.field);
-            for(Shape shape : t2Placements) {
-                pt.addChild(new PlacementTree(shape, getResultingField(shape, pt.field)));
+            for (Shape shape : t2Placements) {
+                pt.addChild(new PlacementTree(shape, pt.field.getResultingField(shape)));
             }
         }
 
@@ -43,21 +43,22 @@ public class PlacementPermutator {
 
     private Set<Shape> getPossiblePlacements(ShapeType shapeType, Field field) {
         Set<Shape> placements = new HashSet<>();
+        int minValidY = field.getHeight() - field.getMaxHeight() - getShapeSize(shapeType);
 
-        for (int x = -2; x < field.getWidth(); x++) {
-            for (int y = field.getHeight() - 1; y >= -2; y--) {
-                int rotations = shapeType == ShapeType.L || shapeType == ShapeType.J || shapeType == ShapeType.T ? 4 : 2;
+        for (int y = field.getHeight() - 1; y >= Math.max(-1, minValidY); y--) {
+            for (int x = -2; x < field.getWidth(); x++) {
+                int rotations = getTimesToRotate(shapeType);
                 for (int i = 0; i < rotations; i++) {
                     Shape shape = new Shape(shapeType, new Point(x, y));
 
-                    for(int j = i; j > 0; j--) {
+                    for (int j = i; j > 0; j--) {
                         shape = shape.turnRight();
                     }
 
-                    if(field.isValidPosition(shape)) {
+                    if (field.isValidPosition(shape)) {
                         Shape start = new Shape(shape.type, getStartingLocation(shape.type));
                         PathFinder pathFinder = new PathFinder(start, shape, field);
-                        if(pathFinder.pathExists()) {
+                        if (pathFinder.pathExists()) {
                             placements.add(shape);
                         }
                     }
@@ -66,6 +67,25 @@ public class PlacementPermutator {
         }
 
         return placements;
+    }
+
+    private int getTimesToRotate(ShapeType shapeType) {
+        int rotations;
+
+        switch (shapeType) {
+            case L:
+            case J:
+                rotations = 4;
+                break;
+            case O:
+                rotations = 1;
+                break;
+            default:
+                rotations = 2;
+                break;
+        }
+
+        return rotations;
     }
 
     private Field removeShapeBlocks(Field field) {
@@ -84,73 +104,6 @@ public class PlacementPermutator {
         return new Field((grid));
     }
 
-    private Field getResultingField(Shape shape, Field field) {
-        Cell[][] grid = new Cell[field.getWidth()][field.getHeight()];
-
-        for (int x = 0; x < field.getWidth(); x++) {
-            for (int y = 0; y < field.getHeight(); y++) {
-                grid[x][y] = field.getCell(x, y);
-            }
-        }
-
-        for (Cell cell : shape.getBlocks()) {
-            grid[cell.getLocation().x][cell.getLocation().y] = cell;
-        }
-
-        return removeCompletedLines(new Field(grid));
-    }
-
-    private Field removeCompletedLines(Field field) {
-        List<Integer> completedLines = getCompletedLines(field);
-
-        if (completedLines.isEmpty()) {
-            return field;
-        } else {
-            Cell[][] grid = new Cell[field.getWidth()][field.getHeight()];
-            int i = 0;
-            int y;
-            for (y = field.getHeight() - 1; y >= 0; y--) {
-                if (i < completedLines.size() && y == completedLines.get(i)) {
-                    i++;
-                } else {
-                    for (int x = 0; x < field.getWidth(); x++) {
-                        grid[x][y + i] = new Cell(x, y + i, field.getCell(x, y).getState());
-                    }
-                }
-            }
-
-            for (y = 0; y < i; y++) {
-                for (int x = 0; x < field.getWidth(); x++) {
-                    grid[x][y] = new Cell(x, y, CellType.EMPTY);
-                }
-            }
-
-            return new Field(grid);
-        }
-    }
-
-    private List<Integer> getCompletedLines(Field field) {
-        List<Integer> completedLines = new ArrayList<>();
-
-        for (int y = field.getHeight() - 1; y >= 0; y--) {
-            boolean isComplete = true;
-
-            for (int x = 0; x < field.getWidth(); x++) {
-                Cell c = field.getCell(x, y);
-                if (c.isEmpty() || c.isSolid()) {
-                    isComplete = false;
-                    break;
-                }
-            }
-
-            if (isComplete) {
-                completedLines.add(y);
-            }
-        }
-
-        return completedLines;
-    }
-
     private Point getStartingLocation(ShapeType type) {
         switch (type) {
             case O:
@@ -158,5 +111,23 @@ public class PlacementPermutator {
             default:
                 return new Point(3, -1);
         }
+    }
+
+    private int getShapeSize(ShapeType shapeType) {
+        int size;
+
+        switch (shapeType) {
+            case I:
+                size = 4;
+                break;
+            case O:
+                size = 2;
+                break;
+            default:
+                size = 3;
+                break;
+        }
+
+        return size;
     }
 }

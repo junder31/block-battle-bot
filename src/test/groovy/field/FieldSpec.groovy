@@ -1,5 +1,6 @@
 package field
 
+import bot.PlacementPermutator
 import spock.lang.Specification
 
 /**
@@ -80,40 +81,8 @@ class FieldSpec extends Specification {
                         "3,3,3,3,3,3,3,3,3,3")
 
         when:
-        Field f1 = FieldUtil.getResultingField(new Shape(ShapeType.J, new Point(7, 5)).turnRight().turnRight(), field);
-        Field f2 = FieldUtil.getResultingField(new Shape(ShapeType.J, new Point(3, 6)).turnLeft(), field)
-
-        then:
-        f2.getScore() > f1.getScore()
-    }
-
-    void "test Z that shouldn't have overhung"() {
-        given:
-        Field field = new Field(10, 20,
-                "0,0,0,0,1,1,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,0,0,0,0,0,0,2,2,2;" +
-                        "0,0,0,0,0,0,0,2,2,2;" +
-                        "0,0,0,0,0,2,2,2,2,2;" +
-                        "0,0,2,2,2,2,2,2,2,2;" +
-                        "2,2,0,2,2,2,2,2,2,2")
-
-        when:
-        Field f1 = FieldUtil.getResultingField(new Shape(ShapeType.Z, new Point(2, 16)), field);
-        Field f2 = FieldUtil.getResultingField(new Shape(ShapeType.Z, new Point(3, 15)).turnRight(), field)
+        Field f1 = field.getResultingField(new Shape(ShapeType.J, new Point(7, 5)).turnRight().turnRight());
+        Field f2 = field.getResultingField(new Shape(ShapeType.J, new Point(3, 6)).turnLeft())
 
         then:
         f2.getScore() > f1.getScore()
@@ -124,8 +93,8 @@ class FieldSpec extends Specification {
         Field field = FieldUtil.getEmptyField(10, 5)
 
         when:
-        Field f1 = FieldUtil.getResultingField(new Shape(ShapeType.I, new Point(3, 1)).turnRight(), field);
-        Field f2 = FieldUtil.getResultingField(new Shape(ShapeType.I, new Point(3, 3)), field)
+        Field f1 = field.getResultingField(new Shape(ShapeType.I, new Point(3, 1)).turnRight());
+        Field f2 = field.getResultingField(new Shape(ShapeType.I, new Point(3, 3)))
 
         then:
         f2.getScore() > f1.getScore()
@@ -156,10 +125,76 @@ class FieldSpec extends Specification {
                         "3,3,3,3,3,3,3,3,3,3")
 
         when:
-        Field f1 = FieldUtil.getResultingField(new Shape(ShapeType.J, new Point(-1, 2)).turnRight(), field);
-        Field f2 = FieldUtil.getResultingField(new Shape(ShapeType.J, new Point(5, 10)), field)
+        Field f1 = field.getResultingField(new Shape(ShapeType.J, new Point(-1, 2)).turnRight());
+        Field f2 = field.getResultingField(new Shape(ShapeType.J, new Point(5, 10)))
 
         then:
         f2.getScore() > f1.getScore()
+    }
+
+    void "test not covering overhang is being applied correctly"() {
+        given:
+        Field field = new Field(10, 20,
+                "0,0,0,0,1,1,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,2,0,0,2,2,2,2,0;" +
+                        "0,2,2,2,2,2,0,2,2,2;" +
+                        "0,2,2,2,2,2,2,2,2,2;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3").getResultingField(new Shape(ShapeType.O, new Point(3, 13)));
+
+        when:
+        Field f1 = field.getResultingField(new Shape(ShapeType.O, new Point(7, 12)));
+        Field f2 = field.getResultingField(new Shape(ShapeType.O, new Point(5, 12)));
+
+        then:
+        f1.getScore() > f2.getScore()
+    }
+
+    void "test limiting overhang is prioritized"() {
+        given:
+        Field field = new Field(10, 20,
+                "0,0,0,1,1,1,1,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,2,0;" +
+                        "0,0,0,2,2,0,0,0,2,2;" +
+                        "2,0,2,2,2,2,2,2,2,2;" +
+                        "2,2,2,0,2,2,2,2,2,2;" +
+                        "0,2,2,0,2,2,2,2,2,2;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3")
+
+        when:
+        Field f1 = field.getResultingField(new Shape(ShapeType.I, new Point(7, 10)).turnRight())
+                .getResultingField(new Shape(ShapeType.L, new Point(5, 13)));
+        Field f2 = field.getResultingField(new Shape(ShapeType.I, new Point(-1, 12)).turnRight())
+                .getResultingField(new Shape(ShapeType.L, new Point(5, 14)));
+
+        then:
+        f1.getScore() > f2.getScore()
     }
 }

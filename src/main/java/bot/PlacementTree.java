@@ -69,15 +69,12 @@ public class PlacementTree implements Comparable<PlacementTree> {
 
     @Override
     public int compareTo(PlacementTree o) {
-        long myScore = getScore();
-        long otherScore = o.getScore();
+        int c = (int)Math.signum(o.getScore() - getScore());
 
-        if (myScore > otherScore) {
-            return -1;
-        } else if (myScore < otherScore) {
-            return 1;
-        } else {
-            return 0;
+        if (c == 0) {
+            c = (int)Math.signum(o.field.getScore() - field.getScore());
         }
+
+        return c;
     }
 }
