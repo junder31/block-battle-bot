@@ -403,4 +403,37 @@ class PlacementTreeSpec extends Specification {
         println(placementTrees.first().field)
         new Shape(ShapeType.I, new Point(0, 16)).turnRight().getBlocks() != placementTrees.first().shape.getBlocks()
     }
+
+    void "test blocking column when next move results in tetris"() {
+        given:
+        Field field = new Field(10, 20,
+                "0,0,0,1,1,1,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "2,0,0,0,0,0,0,0,0,0;" +
+                        "2,2,0,0,0,0,0,0,0,0;" +
+                        "2,2,0,0,0,0,0,0,0,0;" +
+                        "2,2,2,0,0,0,2,0,2,2;" +
+                        "2,2,2,0,2,2,2,2,2,2;" +
+                        "2,2,2,0,2,2,2,2,2,2;" +
+                        "2,2,2,0,2,2,2,2,2,2;" +
+                        "2,2,0,0,2,2,2,2,2,2;" +
+                        "2,2,0,2,2,2,2,2,2,2;" +
+                        "0,2,0,2,2,2,2,2,2,2;" +
+                        "2,2,0,2,2,2,2,2,2,2;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3")
+
+        when:
+        def placementTrees = new PlacementPermutator(field, ShapeType.T, ShapeType.I, 0).getPossibleResultingFields()
+        Collections.sort(placementTrees);
+
+        then:
+        println(placementTrees.first().field)
+        new Shape(ShapeType.I, new Point(6, 8)).turnRight().turnRight().getBlocks() != placementTrees.first().shape.getBlocks()
+    }
 }

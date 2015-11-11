@@ -75,6 +75,7 @@ public class PlacementPermutator {
         switch (shapeType) {
             case L:
             case J:
+            case T:
                 rotations = 4;
                 break;
             case O:

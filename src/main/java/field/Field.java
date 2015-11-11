@@ -290,23 +290,24 @@ public class Field {
         int columnHeight = 0;
         int lastY = height;
         int columnCount = 0;
+        int lastX = -1;
         for(int i = 0; i < sideCells.size(); i++) {
-            if(sideCells.get(i).getY() == lastY + 1) {
+            if(lastX == sideCells.get(i).getX() && sideCells.get(i).getY() == lastY + 1) {
                 columnHeight++;
-                lastY++;
             } else {
                 if(columnHeight >= 3) {
                     columnCount++;
                     openness -= (columnHeight - 2) * Math.pow(sideMultiplier, columnCount);
                 }
-                lastY = sideCells.get(i).getY();
                 columnHeight = 1;
             }
+            lastY = sideCells.get(i).getY();
+            lastX = sideCells.get(i).getX();
         }
 
         if(columnHeight >= 3) {
             columnCount++;
-            openness -= (columnHeight - 3) * Math.pow(sideMultiplier, columnCount);
+            openness -= (columnHeight - 2) * Math.pow(sideMultiplier, columnCount);
         }
 
         return (SCORE_SEGMENT_SIZE * openness) / opennessMax;

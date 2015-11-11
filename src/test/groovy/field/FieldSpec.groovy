@@ -162,4 +162,37 @@ class FieldSpec extends Specification {
         then:
         f1.getScore() > f2.getScore()
     }
+
+    void "test reducing columns results in better score"() {
+        Field field = new Field(10, 20,
+                "0,0,0,1,1,1,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "2,0,0,0,0,0,0,0,0,0;" +
+                        "2,2,0,0,0,0,0,0,0,0;" +
+                        "2,2,0,0,0,0,0,0,0,0;" +
+                        "2,2,2,0,0,0,2,0,2,2;" +
+                        "2,2,2,0,2,2,2,2,2,2;" +
+                        "2,2,2,0,2,2,2,2,2,2;" +
+                        "2,2,2,0,2,2,2,2,2,2;" +
+                        "2,2,0,0,2,2,2,2,2,2;" +
+                        "2,2,0,2,2,2,2,2,2,2;" +
+                        "0,2,0,2,2,2,2,2,2,2;" +
+                        "2,2,0,2,2,2,2,2,2,2;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3")
+
+        when:
+        Field f1 = field.getResultingField(new Shape(ShapeType.T, new Point(3, 9)))
+                .getResultingField(new Shape(ShapeType.I, new Point(5, 7)).turnRight());
+        Field f2 = field.getResultingField(new Shape(ShapeType.T, new Point(6, 8)).turnRight().turnRight())
+                .getResultingField(new Shape(ShapeType.I, new Point(1, 11)).turnRight());
+
+        then:
+        f1.getScore() < f2.getScore()
+    }
 }
