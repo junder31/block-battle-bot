@@ -255,7 +255,7 @@ public class Field {
     }
 
     private long calculateOpennessScorePart() {
-        int overhangMultiplier = 7;
+        int overhangMultiplier = 10;
         int sideMultiplier = 6;
         long opennessMax = (height - 1) * width * 10;
         long openness = opennessMax;
@@ -265,7 +265,7 @@ public class Field {
                 Cell cell = getCell(x, y);
                 if (cell.isEmpty()) {
                     if (y - 1 >= 0 && !getCell(x, y - 1).isEmpty()) {
-                        openness -= overhangMultiplier * countEmptyBelow(cell)  * countOverhang(cell);
+                        openness -= overhangMultiplier * countEmptyBelow(cell);
                     }
 
                     if ( (x + 1 == width || !getCell(x + 1, y).isEmpty()) &&
@@ -278,17 +278,6 @@ public class Field {
         }
 
         return (SCORE_SEGMENT_SIZE * openness) / opennessMax;
-    }
-
-    private int countOverhang(Cell cell) {
-        int count = 0;
-
-        while (cell.getY() - 1 >= 0 && !getCell(cell.getX(), cell.getY() - 1).isEmpty() && count < 2) {
-            cell = getCell(cell.getX(), cell.getY() - 1);
-            count++;
-        }
-
-        return count;
     }
 
     private int countEmptyBelow(Cell cell) {
