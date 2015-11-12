@@ -36,20 +36,27 @@ public class Field {
 
     private final int width;
     private final int height;
+    private final int bonusLines;
     private Cell[][] grid;
     private long score = -1;
 
     public Field(int width, int height, String fieldString) {
         this.width = width;
         this.height = height;
+        this.bonusLines = 0;
 
         parse(fieldString);
     }
 
     public Field(Cell[][] grid) {
+        this(grid, 0);
+    }
+
+    private Field(Cell[][] grid, int bonusLines) {
         width = grid.length;
         height = grid.length > 0 ? grid[0].length : 0;
         this.grid = grid;
+        this.bonusLines = bonusLines;
     }
 
     /**
@@ -185,6 +192,7 @@ public class Field {
         long score = height - maxHeight < 4 ? 0 : 1;
 
         score = (SCORE_SEGMENT_SIZE * score) + calculateOpennessScorePart() - 1;
+        score = 10 * score + bonusLines;
         score = (SCORE_SEGMENT_SIZE * score) + ((SCORE_SEGMENT_SIZE * (height - getMaxHeight())) / height) - 1;
         score = (SCORE_SEGMENT_SIZE * score) + calculateEmptyRegionScorePart() - 1;
 
@@ -423,7 +431,7 @@ public class Field {
                 }
             }
 
-            return new Field(grid);
+            return new Field(grid, bonusLines + (completedLines.size() - 1));
         }
     }
 

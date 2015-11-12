@@ -297,7 +297,7 @@ class PlacementTreeSpec extends Specification {
                         "3,3,3,3,3,3,3,3,3,3")
 
         when:
-        def placementTrees = new PlacementPermutator(field, ShapeType.I, ShapeType.T, 0).getPossibleResultingFields()
+        def placementTrees = new PlacementPermutator(field, ShapeType.I, ShapeType.T).getPossibleResultingFields()
         Collections.sort(placementTrees);
 
         then:
@@ -330,7 +330,7 @@ class PlacementTreeSpec extends Specification {
                         "3,3,3,3,3,3,3,3,3,3;")
 
         when:
-        def placementTrees = new PlacementPermutator(field, ShapeType.I, ShapeType.S, 0).getPossibleResultingFields()
+        def placementTrees = new PlacementPermutator(field, ShapeType.I, ShapeType.S).getPossibleResultingFields()
         Collections.sort(placementTrees);
 
         then:
@@ -363,7 +363,7 @@ class PlacementTreeSpec extends Specification {
                         "3,3,3,3,3,3,3,3,3,3")
 
         when:
-        def placementTrees = new PlacementPermutator(field, ShapeType.O, ShapeType.O, 0).getPossibleResultingFields()
+        def placementTrees = new PlacementPermutator(field, ShapeType.O, ShapeType.O).getPossibleResultingFields()
         Collections.sort(placementTrees);
 
         then:
@@ -396,7 +396,7 @@ class PlacementTreeSpec extends Specification {
                         "2,2,0,2,2,2,2,2,2,2")
 
         when:
-        def placementTrees = new PlacementPermutator(field, ShapeType.I, ShapeType.L, 0).getPossibleResultingFields()
+        def placementTrees = new PlacementPermutator(field, ShapeType.I, ShapeType.L).getPossibleResultingFields()
         Collections.sort(placementTrees);
 
         then:
@@ -429,7 +429,7 @@ class PlacementTreeSpec extends Specification {
                         "3,3,3,3,3,3,3,3,3,3")
 
         when:
-        def placementTrees = new PlacementPermutator(field, ShapeType.T, ShapeType.I, 0).getPossibleResultingFields()
+        def placementTrees = new PlacementPermutator(field, ShapeType.T, ShapeType.I).getPossibleResultingFields()
         Collections.sort(placementTrees);
 
         then:

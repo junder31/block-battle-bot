@@ -54,8 +54,7 @@ public class BotStarter {
 
         List<PlacementTree> possiblePlacements = new PlacementPermutator(state.getMyField(),
                 state.getCurrentShape(),
-                state.getNextShape(),
-                1).getPossibleResultingFields();
+                state.getNextShape()).getPossibleResultingFields();
 
         if (possiblePlacements.size() == 0) {
             throw new RuntimeException("Failed to find any possible placements for " + getCurrentShape(state) + ".");

@@ -16,26 +16,21 @@ public class PlacementPermutator {
     private final Field startingField;
     private final ShapeType t1;
     private final ShapeType t2;
-    private int additionalTurns;
 
-    public PlacementPermutator(Field startingField, ShapeType t1, ShapeType t2, int additionalTurns) {
+    public PlacementPermutator(Field startingField, ShapeType t1, ShapeType t2) {
         this.startingField = removeShapeBlocks(startingField);
         this.t1 = t1;
         this.t2 = t2;
-        this.additionalTurns = additionalTurns;
     }
 
     public List<PlacementTree> getPossibleResultingFields() {
         List<PlacementTree> placementTrees = new ArrayList<>();
 
-        log.debug("Generating possible placements for first generation.");
         Set<Shape> t1Placements = getPossiblePlacements(t1, startingField);
         for (Shape shape : t1Placements) {
             placementTrees.add(new PlacementTree(shape, startingField.getResultingField(shape)));
         }
-        log.debug("Generated %d possible placements for first generation.", placementTrees.size());
 
-        log.debug("Generating possible placements for second generation.");
         Set<PlacementTree> lastGeneration = new HashSet<>();
         for (PlacementTree pt : placementTrees) {
             Set<Shape> t2Placements = getPossiblePlacements(t2, pt.field);
@@ -45,26 +40,7 @@ public class PlacementPermutator {
                 lastGeneration.add(ptt);
             }
         }
-        log.debug("Generated %d possible placements for second generation.", lastGeneration.size());
 
-        for (int i = 0; i < Math.max(1, additionalTurns); i++) {
-            log.debug("Generating possible placements for %d generation.", i + 3);
-            Set<PlacementTree> nextGeneration = new HashSet<>();
-            for (PlacementTree pt : lastGeneration) {
-                for (ShapeType st : ShapeType.values()) {
-                    Set<Shape> placements = getPossiblePlacements(st, pt.field);
-                    for (Shape shape : placements) {
-                        PlacementTree ptt = new PlacementTree(shape, pt.field.getResultingField(shape));
-                        pt.addChild(ptt);
-                        nextGeneration.add(ptt);
-                    }
-                }
-            }
-            lastGeneration = nextGeneration;
-            log.debug("Generated %d possible placements for %d generation.", lastGeneration.size(), i + 3);
-        }
-
-        log.debug("Finished generating possible placements.");
         return placementTrees;
     }
 

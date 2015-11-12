@@ -57,19 +57,17 @@ public class PathFinder {
         return pathExistsHelper(startPath.applyMove(MoveType.DROP), visitedLocations, clearHeight) != null;
     }
 
-    private Path pathExistsHelper(Path path, Set<Shape> visited, int height) {
+    private Path pathExistsHelper(Path currentPath, Set<Shape> visited, int height) {
 
         for (MoveType moveType : MoveType.getPathMoveTypes()) {
-            path.applyMove(moveType);
-            if(path.shape.equals(start) || path.shape.getLocation().y <= height) {
-                return path;
-            } else if(!visitedLocations.contains(path.shape) && path.isValid()){
-                visited.add(path.shape);
-                Path rVal = pathExistsHelper(path, visited, height);
+            Path nextPath = currentPath.applyMove(moveType);
+            if(nextPath.shape.equals(start) || nextPath.shape.getLocation().y <= height) {
+                return nextPath;
+            } else if(!visitedLocations.contains(nextPath.shape) && nextPath.isValid()){
+                visited.add(nextPath.shape);
+                Path rVal = pathExistsHelper(nextPath, visited, height);
                 if(rVal != null) {
                     return rVal;
-                } else {
-                    path.removeLastMove();
                 }
             }
         }
@@ -91,7 +89,7 @@ public class PathFinder {
 
     private class Path {
         protected final LinkedList<MoveType> moves;
-        protected Shape shape;
+        protected final Shape shape;
 
         protected Path(Shape end) {
             moves = new LinkedList<>();
@@ -104,32 +102,31 @@ public class PathFinder {
         }
 
         public Path applyMove(MoveType move) {
-            moves.push(move);
+            LinkedList<MoveType> newMoves = new LinkedList<>(moves);
+            newMoves.push(move);
 
             Shape newShape;
             switch (move) {
                 case DOWN:
-                    shape = shape.oneUp();
+                    newShape = shape.oneUp();
                     break;
                 case LEFT:
-                    shape = shape.oneRight();
+                    newShape = shape.oneRight();
                     break;
                 case RIGHT:
-                    shape = shape.oneLeft();
+                    newShape = shape.oneLeft();
                     break;
                 case TURNRIGHT:
-                    shape = shape.turnLeft();
+                    newShape = shape.turnLeft();
                     break;
                 case TURNLEFT:
-                    shape = shape.turnRight();
+                    newShape = shape.turnRight();
                     break;
+                default:
+                    newShape = shape;
             }
 
-            return this;
-        }
-
-        public void removeLastMove() {
-            moves.pop();
+            return new Path(newMoves, newShape);
         }
 
         public boolean isValid() {
