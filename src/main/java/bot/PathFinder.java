@@ -114,7 +114,7 @@ public class PathFinder {
                     newShape = shape;
             }
 
-            if(!(move == MoveType.DOWN && moves.getLast() == MoveType.DROP)) {
+            if(!(move == MoveType.DOWN && moves.getFirst() == MoveType.DROP)) {
                 newMoves.push(move);
             }
 
