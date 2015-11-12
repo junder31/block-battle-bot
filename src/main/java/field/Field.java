@@ -189,7 +189,8 @@ public class Field {
 
     private long calculateScore() {
         int maxHeight = getMaxHeight();
-        long score = height - maxHeight < 4 ? 0 : 1;
+        long score = areStartingPositionsBlocked() ? 0 : 10;
+        score += height - maxHeight < 4 ? 0 : 1;
 
         score = (SCORE_SEGMENT_SIZE * score) + calculateOpennessScorePart() - 1;
         score = 10 * score + bonusLines;
@@ -197,6 +198,16 @@ public class Field {
         score = (SCORE_SEGMENT_SIZE * score) + calculateEmptyRegionScorePart() - 1;
 
         return score;
+    }
+
+    private boolean areStartingPositionsBlocked() {
+        for(int x = 3; x <= 6; x++) {
+            if(!getCell(x, 0).isEmpty()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private long calculateEmptyRegionScorePart() {
