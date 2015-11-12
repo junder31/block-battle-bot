@@ -17,6 +17,8 @@
 
 package moves;
 
+import field.ShapeOrientation;
+
 /**
  * MoveType class
  * 
@@ -28,12 +30,19 @@ package moves;
 public enum MoveType {
 	DOWN, LEFT, RIGHT, TURNLEFT, TURNRIGHT, DROP, SKIP;
 
+	private static final MoveType[] LEFT_MOVES = new MoveType[]{DOWN, LEFT, RIGHT, TURNLEFT, TURNRIGHT };
+	private static final MoveType[] RIGHT_MOVES = new MoveType[]{DOWN, LEFT, RIGHT, TURNLEFT, TURNRIGHT };
+
 	@Override
 	public String toString() {
 		return this.name().toLowerCase();
 	}
 
-	public static MoveType[] getPathMoveTypes() {
-		return new MoveType[]{DOWN, LEFT, RIGHT, TURNLEFT, TURNRIGHT };
+	public static MoveType[] getPathMoveTypes(ShapeOrientation orientation) {
+		if(orientation == ShapeOrientation.LEFT) {
+			return LEFT_MOVES;
+		} else {
+			return RIGHT_MOVES;
+		}
 	}
 }

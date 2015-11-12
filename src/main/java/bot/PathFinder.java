@@ -17,7 +17,6 @@ import java.util.Set;
  */
 public class PathFinder {
     private static Logger log = new Logger(PathFinder.class.getSimpleName());
-    private Set<Shape> visitedLocations = new HashSet<>();
     private final Shape start;
     private final Shape end;
     private final Field field;
@@ -26,12 +25,13 @@ public class PathFinder {
         this.start = start;
         this.end = end;
         this.field = field;
-        visitedLocations.add(end);
     }
 
     public List<MoveType> findPath() {
         Path startPath = new Path(new Shape(end));
-        Path path = pathExistsHelper(startPath.applyMove(MoveType.DROP), visitedLocations, -100);
+        Set<Shape> visited = new HashSet<>();
+        visited.add(end);
+        Path path = pathExistsHelper(startPath.applyMove(MoveType.DROP), visited, -100);
 
         if(path != null) {
             return path.moves;
@@ -43,37 +43,28 @@ public class PathFinder {
     public boolean pathExists() {
         Path startPath = new Path(new Shape(end));
         int clearHeight = field.getHeight() - (field.getMaxHeight() + end.getSize());
-        return pathExistsHelper(startPath.applyMove(MoveType.DROP), visitedLocations, clearHeight) != null;
+        Set<Shape> visited = new HashSet<>();
+        visited.add(end);
+        return pathExistsHelper(startPath.applyMove(MoveType.DROP), visited, clearHeight) != null;
     }
 
     private Path pathExistsHelper(Path currentPath, Set<Shape> visited, int height) {
 
-        for (MoveType moveType : MoveType.getPathMoveTypes()) {
+        for (MoveType moveType : MoveType.getPathMoveTypes(end.getOrientation())) {
             Path nextPath = currentPath.applyMove(moveType);
             if(nextPath.shape.equals(start) || nextPath.shape.getLocation().y <= height) {
                 return nextPath;
-            } else if(!visitedLocations.contains(nextPath.shape) && nextPath.isValid()){
+            } else if(!visited.contains(nextPath.shape) && nextPath.isValid()){
                 visited.add(nextPath.shape);
                 Path rVal = pathExistsHelper(nextPath, visited, height);
                 if(rVal != null) {
                     return rVal;
                 }
             }
+
         }
 
         return null;
-    }
-
-    private Set<Path> getNextPaths(Set<Path> lastPaths) {
-        Set<Path> nextPaths = new HashSet<>();
-
-        for (Path lastPath : lastPaths) {
-            for (MoveType moveType : MoveType.getPathMoveTypes()) {
-                nextPaths.add(lastPath.applyMove(moveType));
-            }
-        }
-
-        return nextPaths;
     }
 
     private class Path {
