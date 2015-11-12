@@ -52,26 +52,29 @@ public class PathFinder {
     }
 
     public boolean pathExists() {
-        Set<Path> pathSet = new HashSet<>();
         Path startPath = new Path(new Shape(end));
-        pathSet.add(startPath.applyMove(MoveType.DROP));
         int clearHeight = field.getHeight() - (field.getMaxHeight() + end.getSize());
+        return pathExistsHelper(startPath.applyMove(MoveType.DROP), visitedLocations, clearHeight) != null;
+    }
 
-        while (!pathSet.isEmpty()) {
-            log.trace("Evaluating paths: %s", pathSet);
-            Set<Path> nextPathSets = new HashSet<>();
-            for (Path path : getNextPaths(pathSet)) {
-                if (path.shape.equals(start) || path.shape.getLocation().y <= clearHeight) {
-                    return true;
-                } else if (!visitedLocations.contains(path.shape) && path.isValid()) {
-                    nextPathSets.add(path);
-                    visitedLocations.add(path.shape);
+    private Path pathExistsHelper(Path path, Set<Shape> visited, int height) {
+
+        for (MoveType moveType : MoveType.getPathMoveTypes()) {
+            path.applyMove(moveType);
+            if(path.shape.equals(start) || path.shape.getLocation().y <= height) {
+                return path;
+            } else if(!visitedLocations.contains(path.shape) && path.isValid()){
+                visited.add(path.shape);
+                Path rVal = pathExistsHelper(path, visited, height);
+                if(rVal != null) {
+                    return rVal;
+                } else {
+                    path.removeLastMove();
                 }
             }
-            pathSet = nextPathSets;
         }
 
-        return false;
+        return null;
     }
 
     private Set<Path> getNextPaths(Set<Path> lastPaths) {
@@ -88,7 +91,7 @@ public class PathFinder {
 
     private class Path {
         protected final LinkedList<MoveType> moves;
-        protected final Shape shape;
+        protected Shape shape;
 
         protected Path(Shape end) {
             moves = new LinkedList<>();
@@ -101,31 +104,32 @@ public class PathFinder {
         }
 
         public Path applyMove(MoveType move) {
-            LinkedList<MoveType> newMoves = new LinkedList<>(moves);
-            newMoves.push(move);
+            moves.push(move);
 
             Shape newShape;
             switch (move) {
                 case DOWN:
-                    newShape = shape.oneUp();
+                    shape = shape.oneUp();
                     break;
                 case LEFT:
-                    newShape = shape.oneRight();
+                    shape = shape.oneRight();
                     break;
                 case RIGHT:
-                    newShape = shape.oneLeft();
+                    shape = shape.oneLeft();
                     break;
                 case TURNRIGHT:
-                    newShape = shape.turnLeft();
+                    shape = shape.turnLeft();
                     break;
                 case TURNLEFT:
-                    newShape = shape.turnRight();
+                    shape = shape.turnRight();
                     break;
-                default:
-                    newShape = shape;
             }
 
-            return new Path(newMoves, newShape);
+            return this;
+        }
+
+        public void removeLastMove() {
+            moves.pop();
         }
 
         public boolean isValid() {

@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class LogConfig {
     private static LogConfig instance = null;
-    private LogLevel rootLevel = LogLevel.INFO;
+    private LogLevel rootLevel = LogLevel.DEBUG;
     private Map<String, LogLevel> loggerLevels = new HashMap<>();
 
     private LogConfig() {
