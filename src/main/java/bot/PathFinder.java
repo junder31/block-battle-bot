@@ -30,25 +30,14 @@ public class PathFinder {
     }
 
     public List<MoveType> findPath() {
-        Set<Path> pathSet = new HashSet<>();
         Path startPath = new Path(new Shape(end));
-        pathSet.add(startPath.applyMove(MoveType.DROP));
+        Path path = pathExistsHelper(startPath.applyMove(MoveType.DROP), visitedLocations, -100);
 
-        while (!pathSet.isEmpty()) {
-            log.trace("Evaluating paths: %s", pathSet);
-            Set<Path> nextPathSets = new HashSet<>();
-            for (Path path : getNextPaths(pathSet)) {
-                if (path.shape.equals(start)) {
-                    return path.moves;
-                } else if (!visitedLocations.contains(path.shape) && path.isValid()) {
-                    nextPathSets.add(path);
-                    visitedLocations.add(path.shape);
-                }
-            }
-            pathSet = nextPathSets;
+        if(path != null) {
+            return path.moves;
+        } else {
+            throw new NoPathAvailableException();
         }
-
-        throw new NoPathAvailableException();
     }
 
     public boolean pathExists() {
@@ -103,7 +92,6 @@ public class PathFinder {
 
         public Path applyMove(MoveType move) {
             LinkedList<MoveType> newMoves = new LinkedList<>(moves);
-            newMoves.push(move);
 
             Shape newShape;
             switch (move) {
@@ -124,6 +112,10 @@ public class PathFinder {
                     break;
                 default:
                     newShape = shape;
+            }
+
+            if(!(move == MoveType.DOWN && moves.getLast() == MoveType.DROP)) {
+                newMoves.push(move);
             }
 
             return new Path(newMoves, newShape);

@@ -19,9 +19,8 @@ class PathFinderSpec extends Specification {
         List<MoveType> moves = new PathFinder(start, end, field).findPath()
 
         then:
-        4 == moves.size()
+        1 == moves.size()
         MoveType.DROP == moves.last()
-        3 == moves.findAll { it == MoveType.DOWN }.size()
     }
 
     void "test finding a path straight down on full size empty field"() {
@@ -34,9 +33,8 @@ class PathFinderSpec extends Specification {
         List<MoveType> moves = new PathFinder(start, end, field).findPath()
 
         then:
-        20 == moves.size()
+        1 == moves.size()
         MoveType.DROP == moves.last()
-        19 == moves.findAll { it == MoveType.DOWN }.size()
     }
 
     void "test finding a path offset on a small field"() {
@@ -49,10 +47,9 @@ class PathFinderSpec extends Specification {
         List<MoveType> moves = new PathFinder(start, end, field).findPath()
 
         then:
-        5 == moves.size()
+        2 == moves.size()
         MoveType.DROP == moves.last()
-        3 == moves.findAll { it == MoveType.DOWN }.size()
-        1 == moves.findAll { it == MoveType.LEFT }.size()
+        MoveType.LEFT == moves.first()
     }
 
     void "test impossible path from round 3 563ffd5f35ec1d12df1dab35"() {
@@ -184,6 +181,6 @@ class PathFinderSpec extends Specification {
         def moves = new PathFinder(start, end, field).findPath();
 
         then:
-        moves.contains(MoveType.DOWN)
+        moves.contains(MoveType.DROP)
     }
 }

@@ -195,4 +195,35 @@ class FieldSpec extends Specification {
         then:
         f1.getScore() < f2.getScore()
     }
+
+    void "test not placing a piece in starting area"() {
+        Field field = new Field(10, 20,
+                "0,0,0,1,1,0,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,2,2,0,2,2,0,0,0,0;" +
+                        "2,2,2,2,2,2,2,2,2,0;" +
+                        "2,2,2,2,2,2,2,2,2,0;" +
+                        "2,2,2,2,2,2,0,2,2,2;" +
+                        "2,0,2,2,2,2,2,2,2,2;" +
+                        "2,2,2,2,0,2,0,2,2,2;" +
+                        "2,2,2,2,2,2,2,2,0,2;" +
+                        "2,2,2,2,0,2,0,2,2,2;" +
+                        "2,2,2,2,2,2,2,2,2,0;" +
+                        "2,2,0,2,2,2,2,2,2,0;" +
+                        "2,2,2,2,0,2,2,2,2,2;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3")
+
+        when:
+        Field f1 = field.getResultingField(new Shape(ShapeType.S, new Point(4,0)));
+        Field f2 = field.getResultingField(new Shape(ShapeType.S, new Point(8,0)).turnLeft());
+
+        then:
+        f2.getScore() > f1.getScore()
+    }
 }
