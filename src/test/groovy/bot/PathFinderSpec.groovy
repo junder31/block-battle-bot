@@ -47,9 +47,8 @@ class PathFinderSpec extends Specification {
         List<MoveType> moves = new PathFinder(start, end, field).findPath()
 
         then:
-        2 == moves.size()
         MoveType.DROP == moves.last()
-        MoveType.LEFT == moves.first()
+        1 == moves.findAll { MoveType.LEFT == it }.size()
     }
 
     void "test impossible path from round 3 563ffd5f35ec1d12df1dab35"() {
