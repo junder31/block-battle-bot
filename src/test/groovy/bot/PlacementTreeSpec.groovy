@@ -462,7 +462,7 @@ class PlacementTreeSpec extends Specification {
                         "3,3,3,3,3,3,3,3,3,3")
 
         when:
-        def placementTrees = new PlacementPermutator(field, ShapeType.O, ShapeType.S, 0).getPossibleResultingFields()
+        def placementTrees = new PlacementPermutator(field, ShapeType.O, ShapeType.S).getPossibleResultingFields()
         Collections.sort(placementTrees);
 
         then:

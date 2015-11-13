@@ -31,13 +31,13 @@ public class PlacementPermutator {
             placementTrees.add(new PlacementTree(shape, startingField.getResultingField(shape)));
         }
 
-        Set<PlacementTree> lastGeneration = new HashSet<>();
         for (PlacementTree pt : placementTrees) {
-            Set<Shape> t2Placements = getPossiblePlacements(t2, pt.field);
-            for (Shape shape : t2Placements) {
-                PlacementTree ptt = new PlacementTree(shape, pt.field.getResultingField(shape));
-                pt.addChild(ptt);
-                lastGeneration.add(ptt);
+            if(!pt.field.areStartingPositionsBlocked()) {
+                Set<Shape> t2Placements = getPossiblePlacements(t2, pt.field);
+                for (Shape shape : t2Placements) {
+                    PlacementTree ptt = new PlacementTree(shape, pt.field.getResultingField(shape));
+                    pt.addChild(ptt);
+                }
             }
         }
 

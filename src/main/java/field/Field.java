@@ -200,7 +200,7 @@ public class Field {
         return score;
     }
 
-    private boolean areStartingPositionsBlocked() {
+    public boolean areStartingPositionsBlocked() {
         for(int x = 3; x <= 6; x++) {
             if(!getCell(x, 0).isEmpty()) {
                 return true;
