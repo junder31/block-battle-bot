@@ -28,16 +28,21 @@ public class PlacementPermutator {
 
         Set<Shape> t1Placements = getPossiblePlacements(t1, startingField);
         for (Shape shape : t1Placements) {
-            placementTrees.add(new PlacementTree(shape, startingField.getResultingField(shape)));
+            Field field = startingField.getResultingField(shape);
+            if (!field.areStartingPositionsBlocked()) {
+                placementTrees.add(new PlacementTree(shape, field));
+            }
         }
 
         for (PlacementTree pt : placementTrees) {
-            if(!pt.field.areStartingPositionsBlocked()) {
-                Set<Shape> t2Placements = getPossiblePlacements(t2, pt.field);
-                for (Shape shape : t2Placements) {
-                    PlacementTree ptt = new PlacementTree(shape, pt.field.getResultingField(shape));
+            Set<Shape> t2Placements = getPossiblePlacements(t2, pt.field);
+            for (Shape shape : t2Placements) {
+                Field field = pt.field.getResultingField(shape);
+                if (!field.areStartingPositionsBlocked()) {
+                    PlacementTree ptt = new PlacementTree(shape, field);
                     pt.addChild(ptt);
                 }
+
             }
         }
 

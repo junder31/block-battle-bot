@@ -469,4 +469,37 @@ class PlacementTreeSpec extends Specification {
         println(placementTrees.first().field)
         new Shape(ShapeType.O, new Point(3, 0)).getBlocks() != placementTrees.first().shape.getBlocks()
     }
+
+    void "test blocking spawn point is considered worst move ever II"() {
+        given:
+        Field field = new Field(10, 20,
+                "0,0,0,1,1,1,0,0,0,0;" +
+                        "0,0,0,0,0,0,0,0,0,0;" +
+                        "0,0,0,0,2,0,0,0,0,0;" +
+                        "2,2,2,0,2,2,2,0,0,0;" +
+                        "2,2,2,0,2,2,2,2,0,0;" +
+                        "2,2,2,2,2,2,2,2,2,0;" +
+                        "2,2,2,2,2,2,2,2,2,0;" +
+                        "2,2,2,2,2,0,0,2,2,2;" +
+                        "2,2,2,2,2,0,2,2,2,2;" +
+                        "0,2,2,2,2,0,2,2,2,2;" +
+                        "2,0,2,2,2,2,2,2,2,2;" +
+                        "2,2,0,2,2,2,2,2,2,0;" +
+                        "2,2,2,2,2,2,2,2,2,0;" +
+                        "2,2,0,2,2,2,2,2,2,0;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3")
+
+        when:
+        def placementTrees = new PlacementPermutator(field, ShapeType.J, ShapeType.J).getPossibleResultingFields()
+        Collections.sort(placementTrees);
+
+        then:
+        println(placementTrees.first().field)
+        new Shape(ShapeType.J, new Point(4, 0)).getBlocks() != placementTrees.first().shape.getBlocks()
+    }
 }
