@@ -164,6 +164,7 @@ class FieldSpec extends Specification {
     }
 
     void "test reducing columns results in better score"() {
+        given:
         Field field = new Field(10, 20,
                 "0,0,0,1,1,1,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
@@ -196,21 +197,22 @@ class FieldSpec extends Specification {
         f1.getScore() < f2.getScore()
     }
 
-    void "test not placing a piece in starting area"() {
+    void "test board with spawn blocked is considered very bad"() {
+        given:
         Field field = new Field(10, 20,
-                "0,0,0,1,1,0,0,0,0,0;" +
+                "0,0,0,0,1,1,0,0,0,0;" +
                         "0,0,0,0,0,0,0,0,0,0;" +
-                        "0,2,2,0,2,2,0,0,0,0;" +
-                        "2,2,2,2,2,2,2,2,2,0;" +
-                        "2,2,2,2,2,2,2,2,2,0;" +
-                        "2,2,2,2,2,2,0,2,2,2;" +
-                        "2,0,2,2,2,2,2,2,2,2;" +
-                        "2,2,2,2,0,2,0,2,2,2;" +
-                        "2,2,2,2,2,2,2,2,0,2;" +
-                        "2,2,2,2,0,2,0,2,2,2;" +
-                        "2,2,2,2,2,2,2,2,2,0;" +
-                        "2,2,0,2,2,2,2,2,2,0;" +
+                        "0,0,0,2,2,0,0,0,0,0;" +
+                        "0,0,0,2,2,0,0,0,0,0;" +
+                        "0,0,2,2,2,2,0,0,2,0;" +
+                        "0,2,2,2,2,2,0,2,2,2;" +
+                        "0,2,2,2,2,2,2,2,2,2;" +
                         "2,2,2,2,0,2,2,2,2,2;" +
+                        "2,2,0,2,2,2,2,2,2,2;" +
+                        "0,2,0,2,2,2,2,2,2,2;" +
+                        "0,2,2,2,2,2,2,2,2,2;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
+                        "3,3,3,3,3,3,3,3,3,3;" +
                         "3,3,3,3,3,3,3,3,3,3;" +
                         "3,3,3,3,3,3,3,3,3,3;" +
                         "3,3,3,3,3,3,3,3,3,3;" +
@@ -220,10 +222,10 @@ class FieldSpec extends Specification {
                         "3,3,3,3,3,3,3,3,3,3")
 
         when:
-        Field f1 = field.getResultingField(new Shape(ShapeType.S, new Point(4,0)));
-        Field f2 = field.getResultingField(new Shape(ShapeType.S, new Point(8,0)).turnLeft());
+        Field f1 = field.getResultingField(new Shape(ShapeType.O, new Point(3, 0)));
+        Field f2 = field.getResultingField(new Shape(ShapeType.O, new Point(0, 3)));
 
         then:
-        f2.getScore() > f1.getScore()
+        f1.getScore() < f2.getScore()
     }
 }
